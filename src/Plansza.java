@@ -46,6 +46,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     Random generator = new Random();
     int losowa=generator.nextInt(4);
     boolean stoper, active;
+    private Thread th;
 
     /**
      * Konstruktor wczytuj�cy dane planszy gry z pliku konfiguracyjnego.
@@ -59,7 +60,8 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
         setTitle("Balony");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        Naboj = new Balon((getWidth()/2)-30, getHeight() - 120);
+        MouseListenerPlansza();
+        Naboj = new Balon((getWidth() / 2) - 30, getHeight() - 120);
         //System.out.println("w konstruktorze x->" + polozenieNaboju.getWsplX() + "y->" + polozenieNaboju.getWsplY());
         tm.start();
 
@@ -72,15 +74,38 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
 
         });
 
-        this.addKeyListener(new KeyAdapter(){
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                char h = e.getKeyChar();
+                System.out.println(h);
+                if (h == 'p') {
+                    active = false;
+                    try {
+                        if (th.getState() == Thread.State.RUNNABLE) {
+                            try {
+                                th.join();
+                            } catch (NullPointerException e1) {
+                                System.out.println("NullPointerException - przy naciśnięciu Pauza");
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        } else th.interrupt();
+                    } catch (NullPointerException e1) {
+                    }
+                }
+            }
 
 
         });
+    }
 
+        public void MouseListenerPlansza() {
         this.addMouseListener(new MouseAdapter() {
             /**
              * {@inheritDoc}
-             *słuchacz myszki
+             * słuchacz myszki
+             *
              * @param e
              */
             @Override
@@ -88,28 +113,27 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
 
                 super.mouseClicked(e);
                 System.out.println(e.getPoint());
-                Thread th = new Thread(Plansza.this::run);
+                th = new Thread(Plansza.this::run);
+                active = true;
                 th.start();
 
                 Polozenie gdzieKliknieto = new Polozenie(e.getX(), e.getY());
                 //Polozenie polozenieWyrzutni = new Polozenie(Naboj.getWsplX(), Naboj.getWsplY());
                 przesuniecieWPoziomie = gdzieKliknieto.getWsplX() - Naboj.getWsplX();
                 przesuniecieWPionie = gdzieKliknieto.getWsplY() - Naboj.getWsplY();
-                droga= Math.sqrt(przesuniecieWPionie*przesuniecieWPionie + przesuniecieWPoziomie*przesuniecieWPoziomie);
+                droga = Math.sqrt(przesuniecieWPionie * przesuniecieWPionie + przesuniecieWPoziomie * przesuniecieWPoziomie);
                 // System.out.println("droga przesuniecieX przesuniecieY " + droga + przesuniecieWPoziomie + przesuniecieWPionie);
-                proporcjaX = przesuniecieWPoziomie/droga;
-                proporcjaY = przesuniecieWPionie/droga;
-                PRZESUNIECIEX=Math.abs(PRZESUNIECIE*proporcjaX);
-                PRZESUNIECIEY=Math.abs(PRZESUNIECIE*proporcjaY);
+                proporcjaX = przesuniecieWPoziomie / droga;
+                proporcjaY = przesuniecieWPionie / droga;
+                PRZESUNIECIEX = Math.abs(PRZESUNIECIE * proporcjaX);
+                PRZESUNIECIEY = Math.abs(PRZESUNIECIE * proporcjaY);
             }
 
 
         });
-        setVisible(true);
-        setResizable(true);
-
-
-    }
+        }
+        //setVisible(true);
+       // setResizable(true);
     /**
      *usypia watek na n ms
      */
@@ -507,7 +531,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
                 break;
             }
            // Balon temp = new Balon(Naboj.getWsplX(), Naboj.getWsplY());
-            else{
+            if(active){
                 modyfikacjaPolozenia();
                 repaint();
                 Sleeeep(25);
