@@ -24,9 +24,9 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     double proporcjaX;
     double proporcjaY;
     double droga;
-    Polozenie polozenieNaboju;
+    Balon Naboj;
 
-    private JMenuBar menuBar;
+  //  private JMenuBar menuBar;
     private JMenuItem wyjdz;
     private JMenuItem pauza;
 
@@ -40,7 +40,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     double PRZESUNIECIEX;
     double PRZESUNIECIEY;
     private Vector<Polozenie> polozenia = new Vector<>();
-    private Vector<Polozenie> polozenia2 = new Vector<>();
+    private Vector<Polozenie> polozeniaBalonow = new Vector<>();
     int przesuniecieWPoziomie;
     int przesuniecieWPionie;
     Random generator = new Random();
@@ -58,7 +58,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
         setTitle("Balony");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        polozenieNaboju = new Polozenie((getWidth()/2)-30, getHeight() - 120);
+        Naboj = new Balon((getWidth()/2)-30, getHeight() - 120);
         //System.out.println("w konstruktorze x->" + polozenieNaboju.getWsplX() + "y->" + polozenieNaboju.getWsplY());
         tm.start();
 
@@ -66,7 +66,6 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             public void windowClosing(WindowEvent e) {
                 dispose();
                 Menu okienko = new Menu();
-
             }
 
 
@@ -86,9 +85,9 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
                 th.start();
 
                 Polozenie gdzieKliknieto = new Polozenie(e.getX(), e.getY());
-                Polozenie polozenieWyrzutni = new Polozenie(polozenieNaboju.getWsplX(), polozenieNaboju.getWsplY());
-                przesuniecieWPoziomie = gdzieKliknieto.getWsplX() - polozenieWyrzutni.getWsplX();
-                przesuniecieWPionie = gdzieKliknieto.getWsplY() - polozenieWyrzutni.getWsplY();
+                //Polozenie polozenieWyrzutni = new Polozenie(Naboj.getWsplX(), Naboj.getWsplY());
+                przesuniecieWPoziomie = gdzieKliknieto.getWsplX() - Naboj.getWsplX();
+                przesuniecieWPionie = gdzieKliknieto.getWsplY() - Naboj.getWsplY();
                 droga= Math.sqrt(przesuniecieWPionie*przesuniecieWPionie + przesuniecieWPoziomie*przesuniecieWPoziomie);
                 // System.out.println("droga przesuniecieX przesuniecieY " + droga + przesuniecieWPoziomie + przesuniecieWPionie);
                 proporcjaX = przesuniecieWPoziomie/droga;
@@ -121,30 +120,27 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     private void modyfikacjaPolozenia() {
 
        // System.out.println(" W modyf x->" + polozenieNaboju.getWsplX() + "y->" + polozenieNaboju.getWsplY());
-        int a = getWidth()-(getWidth()/SZEROKOSC);
-        System.out.println(a);
-        System.out.println(getWidth());
-        System.out.println(SZEROKOSC);
+        int a = (SZEROKOSC - 1) * 60;
 
-        if (polozenieNaboju.getWsplX() >= 0 && polozenieNaboju.getWsplX() <= a) {
+        if (Naboj.getWsplX() >= 0 && Naboj.getWsplX() <= a) {
             if (przesuniecieWPoziomie < 0) {
-                polozenieNaboju.setWsplX((int) (polozenieNaboju.getWsplX() - PRZESUNIECIEX));
+                Naboj.setWsplX((int) (Naboj.getWsplX() - PRZESUNIECIEX));
             }
             if (przesuniecieWPoziomie > 0) {
-                polozenieNaboju.setWsplX((int) (polozenieNaboju.getWsplX() + PRZESUNIECIEX));
+                Naboj.setWsplX((int) (Naboj.getWsplX() + PRZESUNIECIEX));
             }
 
 
         }
-        if(polozenieNaboju.getWsplX() <= 0)
+        if(Naboj.getWsplX() <= 0)
         {
-            polozenieNaboju.setWsplX(0);
+            Naboj.setWsplX(0);
             PRZESUNIECIEX=-1*PRZESUNIECIEX;
         }
 
 
-        if(polozenieNaboju.getWsplX() >= a) {
-            polozenieNaboju.setWsplX(a);
+        if(Naboj.getWsplX() >= a) {
+            Naboj.setWsplX(a);
             //System.out.println(getWidth());
             PRZESUNIECIEX=-1*PRZESUNIECIEX;
         }
@@ -161,23 +157,22 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             }
         }*/
 
-        if (polozenieNaboju.getWsplY() >= 60 && polozenieNaboju.getWsplY() <= getHeight() - 60) {
+        if (Naboj.getWsplY() >= 60 && Naboj.getWsplY() <= getHeight() - 60) {
             if (przesuniecieWPionie < 0)
             {
-                polozenieNaboju.setWsplY((int) (polozenieNaboju.getWsplY() - PRZESUNIECIEY));
+                Naboj.setWsplY((int) (Naboj.getWsplY() - PRZESUNIECIEY));
                 //if(polozenieNaboju.getWsplY() < 60)
                 //System.out.println("chuj " + (PRZESUNIECIE) + " " + (proporcjaX) + " " + (proporcjaY) + " " +  PRZESUNIECIEY);
                 //}
                 if (przesuniecieWPionie > 0)
                 {
-                    polozenieNaboju.setWsplY((int) (polozenieNaboju.getWsplY() + PRZESUNIECIEY));
+                    Naboj.setWsplY((int) (Naboj.getWsplY() + PRZESUNIECIEY));
                 }
 
             }
-            if(polozenieNaboju.getWsplY() <= 60)
+            if(Naboj.getWsplY() <= 60)
             {
-                polozenieNaboju.setWsplY(60);
-               // PRZESUNIECIEY=-1*PRZESUNIECIEY;
+                Naboj.setWsplY(60);
                 PRZESUNIECIEY=0;
                 PRZESUNIECIEX=0;
             }
@@ -185,9 +180,9 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
 
 
 
-            if(polozenieNaboju.getWsplY() >= getHeight() - 60)
+            if(Naboj.getWsplY() >= getHeight() - 60)
             {
-                polozenieNaboju.setWsplY(getHeight() - 60);
+                Naboj.setWsplY(getHeight() - 60);
                 PRZESUNIECIEY=-1*PRZESUNIECIEY;
             }
 
@@ -269,22 +264,22 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             case 0:
                 img = new ImageIcon("czerwony.png");
                 balonik = img.getImage();
-                g.drawImage(balonik, polozenieNaboju.getWsplX() * 1, polozenieNaboju.getWsplY() * 1, null);
+                g.drawImage(balonik, Naboj.getWsplX() * 1, Naboj.getWsplY() * 1, null);
                 break;
             case 1:
                 img = new ImageIcon("zolty.png");
                 balonik = img.getImage();
-                g.drawImage(balonik, polozenieNaboju.getWsplX() * 1, polozenieNaboju.getWsplY() * 1, null);
+                g.drawImage(balonik, Naboj.getWsplX() * 1, Naboj.getWsplY() * 1, null);
                 break;
             case 2:
                 img = new ImageIcon("zielony.png");
                 balonik = img.getImage();
-                g.drawImage(balonik, polozenieNaboju.getWsplX() * 1, polozenieNaboju.getWsplY() * 1, null);
+                g.drawImage(balonik, Naboj.getWsplX() * 1, Naboj.getWsplY() * 1, null);
                 break;
             case 3:
                 img = new ImageIcon("niebieski.png");
                 balonik = img.getImage();
-                g.drawImage(balonik, polozenieNaboju.getWsplX() * 1, polozenieNaboju.getWsplY() * 1, null);
+                g.drawImage(balonik, Naboj.getWsplX() * 1, Naboj.getWsplY() * 1, null);
                 break;
         }
 
@@ -486,9 +481,9 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     public void run() {
 
         while (true) {
-            Polozenie temp = new Polozenie(polozenieNaboju.getWsplX(), polozenieNaboju.getWsplY());
+            Balon temp = new Balon(Naboj.getWsplX(), Naboj.getWsplY());
             modyfikacjaPolozenia();
-            if (polozenieNaboju != temp) {
+            if (Naboj != temp) {
                 repaint();
                 Sleeeep(25);
             } else
