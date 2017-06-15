@@ -22,13 +22,12 @@ public class Menu extends JFrame implements ActionListener{
         super("Bubble hit");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(350, 500);
-        setLocation(100, 200);
+        setLocationRelativeTo(null);
         setLayout(new GridLayout(4, 1));
 
         /**
          *Tworzenie przycisków menu głównego
          */
-        mRozpocznijGre = new JMenuItem("Rozpocznij Grę");
         start = new JButton("Start");
         opcje = new JButton("Opcje");
         wyniki = new JButton("Wyniki");
@@ -41,42 +40,9 @@ public class Menu extends JFrame implements ActionListener{
         add(wyniki);
         add(wyjdz);
 
-      //  Container parent = start.getParent();
         setVisible(true);
     }
-/* JMenuBar menuBar;
-    private JMenu menuGra;
-    private JMenuItem mRozpocznijGre;
-    private JLabel lNazwa;
-
-    public Menu() {
-        setTitle("Balony");
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setResizable(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setLayout(new BorderLayout());
-
-        menuBar = new JMenuBar();
-        menuGra = new JMenu("Gra");
-
-        mRozpocznijGre = new JMenuItem("Rozpocznij Grę");
-        mRozpocznijGre.addActionListener(this);
-        menuGra.add(mRozpocznijGre);
-
-        setJMenuBar(menuBar);
-        menuBar.add(menuGra);
-
-        lNazwa = new JLabel("Witaj w grze Balony!", SwingConstants.CENTER);
-        lNazwa.setBounds(20,20,300,200);
-        lNazwa.setFont(new Font("SanSerif",Font.BOLD,25));
-        add(lNazwa);
-        setVisible(true);
-
-    }*/
     public void actionPerformed(ActionEvent e){
-        //Object z = e.getSource();
         if(e.getSource()==start)
         {
 
@@ -86,11 +52,7 @@ public class Menu extends JFrame implements ActionListener{
             try {
                 dispose();
                 Plansza plansza = new Plansza(plikKofiguracyjny);
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        plansza.setVisible(true);
-                    }
-                });
+                EventQueue.invokeLater(() -> plansza.setVisible(true));
 
             }
             catch (IOException error)
@@ -105,11 +67,4 @@ public class Menu extends JFrame implements ActionListener{
 
 
     }
-
-
-    public static void main(String[] args)
-    {
-        Menu okienko = new Menu();
-    }
-
 }
