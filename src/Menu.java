@@ -9,8 +9,42 @@ import java.io.IOException;
  * Created by Błażej on 2017-05-26.
  */
 public class Menu extends JFrame implements ActionListener{
+    JMenuBar menuBar;
+    private JMenu menuGra;
+    private JMenuItem mRozpocznijGre;
+    private JLabel lNazwa;
+    private JButton start;
+    private JButton wyjdz;
+    private JButton opcje;
+    private JButton wyniki;
 
-    private JMenuBar menuBar;
+    public Menu() {
+        super("Bubble hit");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setSize(350, 500);
+        setLocation(100, 200);
+        setLayout(new GridLayout(4, 1));
+
+        /**
+         *Tworzenie przycisków menu głównego
+         */
+        mRozpocznijGre = new JMenuItem("Rozpocznij Grę");
+        start = new JButton("Start");
+        opcje = new JButton("Opcje");
+        wyniki = new JButton("Wyniki");
+        wyjdz = new JButton("Wyjdz");
+        start.addActionListener(this);
+        wyjdz.addActionListener(this);
+
+        add(start);
+        add(opcje);
+        add(wyniki);
+        add(wyjdz);
+
+      //  Container parent = start.getParent();
+        setVisible(true);
+    }
+/* JMenuBar menuBar;
     private JMenu menuGra;
     private JMenuItem mRozpocznijGre;
     private JLabel lNazwa;
@@ -39,11 +73,11 @@ public class Menu extends JFrame implements ActionListener{
         lNazwa.setFont(new Font("SanSerif",Font.BOLD,25));
         add(lNazwa);
         setVisible(true);
-    }
-    @Override
+
+    }*/
     public void actionPerformed(ActionEvent e){
-        Object z = e.getSource();
-        if(z==mRozpocznijGre)
+        //Object z = e.getSource();
+        if(e.getSource()==start)
         {
 
             File plikKofiguracyjny = new File("plikTekstowy.txt");
@@ -65,8 +99,14 @@ public class Menu extends JFrame implements ActionListener{
             }
 
         }
+        if(e.getSource()==wyjdz){
+            System.exit(0);
+        }
+
 
     }
+
+
     public static void main(String[] args)
     {
         Menu okienko = new Menu();

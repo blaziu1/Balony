@@ -9,6 +9,11 @@ WYMIARY 11 15
 #8
 #9 tego tez nie
 #10
+#1234123412
+#1234123412
+#1234123412
+#1234123412
+#1234123412
 #11 X  Y     Kod Koloru
 1	1	99
 2	1	99
@@ -61,8 +66,8 @@ WYMIARY 11 15
 5	5	99
 6	5	99
 7	5	99
-8	5	99
-9	5	99
-10	5	99
-0	5	99
+#8	5	99
+#9	5	99
+#10	5	99
+#0	5	99
 # nalezy pamietać zeby nie zostawic na dole pustych linijek
