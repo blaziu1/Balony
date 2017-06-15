@@ -15,9 +15,6 @@ import javax.swing.Timer;
 public class Plansza extends JFrame implements ActionListener, Runnable {
     private Image img;
     private Image balonik;
-    private int WYSOKOSC, SZEROKOSC;
-    private int czas = 5;
-    private Timer tm = new Timer(czas, this);
     private double proporcjaX;
     private double proporcjaY;
     private double droga;
@@ -26,17 +23,13 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     private JMenuItem wyjdz;
     private JMenuItem pauza;
 
-    public JPanel getPlansza() {
+   /* public JPanel getPlansza() {
         return plansza;
-    }
+    }*/
 
-    private JPanel plansza;
-    private Properties pola = new Properties();
     private double PRZESUNIECIE=10;
     private  double PRZESUNIECIEX;
     private  double PRZESUNIECIEY;
-    private Vector<Polozenie> polozenia = new Vector<>();
-    private Vector<Balon> balony = new Vector<>();
     private int przesuniecieWPoziomie;
     private int przesuniecieWPionie;
     private Random generator = new Random();
@@ -44,6 +37,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     private int losowa2=generator.nextInt(4);
     private boolean stoper, active;
     private Thread th;
+    private OdczytPlanszy odczyt=new OdczytPlanszy();
 
     private Balon Naboj;
     private Balon NowyNaboj;
@@ -57,9 +51,12 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
      * @throws IOException je�eli nie b�dzie mo�na nawi�za� po��czenia
      */
 
-    public Plansza(File plikStartowy) throws IOException {
-        Wczytaj(plikStartowy);
-        setTitle("Balony");
+    Plansza(File plikStartowy) throws IOException {
+       // OdczytPlanszy odczyt=new OdczytPlanszy();
+        odczyt.Wczytaj(plikStartowy);
+        setSize(odczyt.SZEROKOSC * 60, odczyt.WYSOKOSC * 60);
+        StworzPustaPlansze(odczyt.WYSOKOSC, odczyt.SZEROKOSC);
+        setTitle("Bubble Hit");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         MouseListenerPlansza();
@@ -67,7 +64,8 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
         NowyNaboj = new Balon(getWidth() - 80, getHeight() - 70 );
 
      //   wczytajNowyNaboj();
-        //System.out.println("w konstruktorze x->" + polozenieNaboju.getWsplX() + "y->" + polozenieNaboju.getWsplY());
+        int czas = 5;
+        Timer tm = new Timer(czas, this);
         tm.start();
 
         this.addWindowListener(new WindowAdapter() {
@@ -155,7 +153,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     private void modyfikacjaPolozenia() {
 
         // System.out.println(" W modyf x->" + polozenieNaboju.getWsplX() + "y->" + polozenieNaboju.getWsplY());
-        int a = (SZEROKOSC - 1) * 60;
+        int a = (odczyt.SZEROKOSC - 1) * 60;
 
         if (Naboj.getWsplX() >= 0 && Naboj.getWsplX() <= a) {
             if (przesuniecieWPoziomie < 0) {
@@ -179,24 +177,10 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             PRZESUNIECIEX = -1 * PRZESUNIECIEX;
         }
 
-        //tutaj pr�bowa�em zrobi� odbijanie dla X
-        /*else if (polozenieNaboju.getWsplX() < 60 || polozenieNaboju.getWsplX() > (getWidth() - 120))
-        {
-        	PRZESUNIECIEX=-PRZESUNIECIEX;
-        	if (przesuniecieWPoziomie < 0) {
-                polozenieNaboju.setWsplX((int) (polozenieNaboju.getWsplX() - PRZESUNIECIEX));
-            }
-            if (przesuniecieWPoziomie > 0) {
-                polozenieNaboju.setWsplX((int) (polozenieNaboju.getWsplX() + PRZESUNIECIEX));
-            }
-        }*/
 
         if (Naboj.getWsplY() >= 60 && Naboj.getWsplY() <= getHeight() - 60) {
             if (przesuniecieWPionie < 0) {
                 Naboj.setWsplY((int) (Naboj.getWsplY() - PRZESUNIECIEY));
-                //if(polozenieNaboju.getWsplY() < 60)
-                //System.out.println("chuj " + (PRZESUNIECIE) + " " + (proporcjaX) + " " + (proporcjaY) + " " +  PRZESUNIECIEY);
-                //}
                 if (przesuniecieWPionie > 0) {
                     Naboj.setWsplY((int) (Naboj.getWsplY() + PRZESUNIECIEY));
                 }
@@ -221,7 +205,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             }
         }
 
-        boolean czyMoznadalej = CzyDrogaWolna(balony);
+        boolean czyMoznadalej = CzyDrogaWolna(odczyt.balony);
         if (!czyMoznadalej) {
 
             int n=0;
@@ -248,7 +232,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     }
 
     private boolean CzyDrogaWolna(Vector<Balon> balony){
-        for (Balon b: balony){
+        for (Balon b: odczyt.balony){
             if (Math.sqrt(Math.pow(b.getWsplX() * 60 - (Naboj.getWsplX()),2)+Math.pow(Math.abs(b.getWsplY() * 60  - (Naboj.getWsplY())),2))<=45) {
                 return false;
             }
@@ -271,32 +255,6 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             }
         }
 
-
-
-
-
-        //tym chcia�em zamkn�� w�tek ale nie dzia�a
-        /*if (polozenieNaboju.getWsplX() < 60 || polozenieNaboju.getWsplX() > (getWidth() - 120))
-        	tm.stop();
-
-        if (polozenieNaboju.getWsplY() < 60 || polozenieNaboju.getWsplY() > getHeight() - 60)
-        	tm.stop();*/
-
-            //tutaj pr�bowa�em zrobi� odbijanie dla Y
-        /*else if (polozenieNaboju.getWsplY() < 60 || polozenieNaboju.getWsplY() > getHeight() - 60)
-        {
-        	PRZESUNIECIEY=-PRZESUNIECIEY;
-        	if (przesuniecieWPionie < 0)
-            {
-                polozenieNaboju.setWsplY((int) (polozenieNaboju.getWsplY() - PRZESUNIECIEY));
-                System.out.println("chuj " + (PRZESUNIECIE) + " " + (proporcjaX) + " " + (proporcjaY) + " " +  PRZESUNIECIEY);
-                }
-            if (przesuniecieWPionie > 0)
-            {
-                polozenieNaboju.setWsplY((int) (polozenieNaboju.getWsplY() + PRZESUNIECIEY));
-            }
-        }*/
-
     /**
      * maluje komponent planszy gry
      *
@@ -309,13 +267,13 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
         super.paintComponents(g);
 
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, SZEROKOSC * 60, WYSOKOSC * 60);
+        g.fillRect(0, 0, odczyt.SZEROKOSC * 60, odczyt.WYSOKOSC * 60);
         g.setColor(Color.GRAY);
-        g.fillRect(0, 0, SZEROKOSC * 60, 60);
+        g.fillRect(0, 0, odczyt.SZEROKOSC * 60, 60);
         //g.fillRect(0, 0, 60, WYSOKOSC * 60);
         //g.fillRect(SZEROKOSC * 60 - 60, 0, 60, WYSOKOSC * 60);
-        g.fillRect(0, WYSOKOSC * 60 - 60, SZEROKOSC * 60, 60);
-        for (Balon b : balony) {
+        g.fillRect(0, odczyt.WYSOKOSC * 60 - 60, odczyt.SZEROKOSC * 60, 60);
+        for (Balon b : odczyt.balony) {
             switch (b.getKolor()) {
                 case ZOLTY:
      //               g.setColor(Color.YELLOW);
@@ -393,7 +351,7 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
     }
 
     public void paint(Graphics g) {
-        BufferedImage dbImage = new BufferedImage(SZEROKOSC * 60, WYSOKOSC * 60, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage dbImage = new BufferedImage(odczyt.SZEROKOSC * 60, odczyt.WYSOKOSC * 60, BufferedImage.TYPE_INT_ARGB);
         Graphics dbg = dbImage.getGraphics();
         paintComponent(dbg);
 
@@ -403,58 +361,6 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
         g.drawImage(scaled, 0, 0, this);
     }
 
-    /**
-     * Metoda wczytuje wymiary planszy oraz informacje o balonach z pliku konfiguracyjnego
-     *
-     * @param plikStartowy bie��ca linijka
-     * @throws IOException je�eli nie uda si� otworzyc pliku
-     */
-    private void Wczytaj(File plikStartowy) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(plikStartowy))) {
-            String line = br.readLine();
-            while (line != null) {
-                if (line.contains("WYMIARY")) {
-                    String[] wymiaryString = line.split("\\s+");
-                    SZEROKOSC = Integer.parseInt(wymiaryString[1]);
-                    WYSOKOSC = Integer.parseInt(wymiaryString[2]);
-
-                    setSize(SZEROKOSC * 60, WYSOKOSC * 60);
-                    StworzPustaPlansze(WYSOKOSC, SZEROKOSC);
-
-                    line = br.readLine();
-                } else {
-                    try {
-                        line = WczytajBalony(br, line);
-                    } catch (NullPointerException e) {
-                        break;
-                    }
-                }
-
-            }
-
-        }
-
-    }
-
-    /**
-     * Metoda wczytuje po�ozenie balon�w  z pliku kofiguracyjnego.
-     *
-     * @param line bie��ca linijka
-     * @param br   bufor czytnika
-     * @return bierzaca linie
-     * @throws IOException je�eli nie uda si� odczyta� kolejnej linijki
-     */
-    private String WczytajBalony(BufferedReader br, String line) throws IOException {
-
-        if (line.contains("#"))
-            line = br.readLine();
-        else {
-            WczytajPole(line);
-            line = br.readLine();
-        }
-
-        return line;
-    }
 
     /**
      * Metoda tworzy pusta plansze o podanych wymiarach.
@@ -468,66 +374,9 @@ public class Plansza extends JFrame implements ActionListener, Runnable {
             for (int j = 0; j < SZEROKOSC; j++) {
 
                 Polozenie wspolrzedne = new Polozenie(j, i);
-                polozenia.add(wspolrzedne);
-                pola.put(wspolrzedne, new Balon());
+                odczyt.polozenia.add(wspolrzedne);
+                odczyt.pola.put(wspolrzedne, new Balon());
             }
-        }
-    }
-
-    /**
-     * Metoda wczytuje z odczytanej lini pliku po�ozenie i kolor balona a obiektu klasy Plansza.
-     *
-     * @param line bie��ca linijka pliku nad ktora pracuje metoda
-     */
- /*   private void inneWczytajPole(String line) throws FileNotFoundException {
-        FileReader filer = new FileReader("plikTekstowy.txt");
-        BufferedReader buffr = new BufferedReader(filer);
-
-        for(int j = 0; j<11; j++){
-            for(int i=1; i<6; i++){
-                try{
-                    int wsplX = j;
-                    int wsplY = i;
-                    int kolorInt=1;
-                    Kolor kolor;
-                    Polozenie wspolrzedneBalona = new Polozenie(wsplX, wsplY);
-                    kolor = getKolor(kolorInt);
-                    Balon balon = new Balon(kolor, wsplX, wsplY);
-                    balony.add(balon);
-                    for (Polozenie p : polozenia) {
-                        if (p.equals(wspolrzedneBalona))
-                            wspolrzedneBalona = p;
-                        pola.replace(wspolrzedneBalona, balon);
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("ERROR = ArrayIndexOutOfBoundsException in Wczytaj Pole");
-            }
-            }
-        }
-    }*/
-
-
-    private void WczytajPole(String line) {
-
-        String[] balonString = line.split("\\s+");
-        try {
-            int wsplX = Integer.parseInt(balonString[0]);
-            int wsplY = Integer.parseInt(balonString[1]);
-            int kolorInt = Integer.parseInt(balonString[2]);
-            Kolor kolor;
-            Polozenie wspolrzedneBalona = new Polozenie(wsplX, wsplY);
-            kolor = getKolor(kolorInt);
-            Balon balon = new Balon(kolor, wsplX, wsplY);
-            balony.add(balon);
-            for (Polozenie p : polozenia) {
-                if (p.equals(wspolrzedneBalona))
-                    wspolrzedneBalona = p;
-                pola.replace(wspolrzedneBalona, balon);
-            }
-
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("ERROR = ArrayIndexOutOfBoundsException in Wczytaj Pole");
         }
     }
 

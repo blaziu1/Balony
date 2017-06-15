@@ -5,21 +5,15 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Błażej on 2017-05-26.
- */
+
 public class Menu extends JFrame implements ActionListener{
-    JMenuBar menuBar;
-    private JMenu menuGra;
-    private JMenuItem mRozpocznijGre;
-    private JLabel lNazwa;
     private JButton start;
     private JButton wyjdz;
     private JButton opcje;
     private JButton wyniki;
 
-    public Menu() {
-        super("Bubble hit");
+    Menu() {
+        super("Bubble Hit");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(350, 500);
         setLocationRelativeTo(null);
