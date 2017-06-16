@@ -83,7 +83,10 @@ public class Plansza extends JFrame implements ActionListener {
                 }
                 if(licznik==3)
                 {
-                    addBallons();
+                    descendBallons();
+                    System.out.println(addBallons().size());
+                    for(int i=0;i<addBallons().size();i++)
+                    displayedBalloons.add(addBallons().get(i));
                 }
               //  if(!checkStatus()){
               //      System.out.println("1");
@@ -290,11 +293,7 @@ public class Plansza extends JFrame implements ActionListener {
             pociski.lastElement().setWsplX((pociski.lastElement().getWsplX()/60));
             pociski.lastElement().setWsplY((pociski.lastElement().getWsplY()/60));
             displayedBalloons.add(pociski.lastElement());
-           // pociski.clear();
-         //   pociski.remove(Bullet);
-        //    pociski.set(1,pociski.get(0));
             Bullet =new Balon(getKolor(99), (odczyt.SZEROKOSC)*60 - 60, (odczyt.WYSOKOSC-1)*60);
-         //   pociski.add(Bullet);
              SecBullet = pociski.firstElement();
              SecBullet.setWsplX((odczyt.SZEROKOSC)*30 - 30);
              SecBullet.setWsplY((odczyt.WYSOKOSC-2)*60);
@@ -316,12 +315,22 @@ public class Plansza extends JFrame implements ActionListener {
         return true;
     }
 
-    private void addBallons(){
-        int size = displayedBalloons.size();
-        for (Balon displayedBalloon : displayedBalloons) {
-            displayedBalloon.setWsplY(displayedBalloon.getWsplY() + 2);
+    private void descendBallons(){
+        for (Balon db : displayedBalloons) {
+            db.setWsplY(db.getWsplY() + 2);
         }
         licznik=0;
+    }
+
+    private Vector<Balon> addBallons(){
+        OdczytPlanszy load=new OdczytPlanszy();
+        try{
+            load.Wczytaj(new File("fabularnysredni.txt"));
+        }
+        catch(IOException error){
+            System.out.println("ERROR: IOException");
+        }
+        return load.balony;
     }
 
     private boolean checkStatus() {
@@ -587,12 +596,6 @@ public class Plansza extends JFrame implements ActionListener {
             }
         }
     }
-
- /*   @Override
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }*/
 
 
     /**
