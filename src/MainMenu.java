@@ -6,13 +6,13 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class Menu extends JFrame implements ActionListener{
+public class MainMenu extends JFrame implements ActionListener{
     private JButton start;
     private JButton wyjdz;
     private JButton opcje;
     private JButton wyniki;
 
-    Menu() {
+    MainMenu() {
         super("Bubble Hit");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(350, 500);
@@ -28,6 +28,7 @@ public class Menu extends JFrame implements ActionListener{
         wyjdz = new JButton("Wyjdz");
         start.addActionListener(this);
         wyjdz.addActionListener(this);
+        wyniki.addActionListener(this);
 
         add(start);
         add(opcje);
@@ -39,22 +40,13 @@ public class Menu extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==start)
         {
+            dispose();
+            ModeMenu modeMenu = new ModeMenu();
+        }
+        if(e.getSource()==wyniki){
+            dispose();
 
-            File plikKofiguracyjny = new File("plikTekstowy.txt");
-
-
-            try {
-                dispose();
-                Plansza plansza = new Plansza(plikKofiguracyjny);
-            //    EventQueue.invokeLater(() -> plansza.setVisible(true));
-                plansza.setVisible(true);
-
-            }
-            catch (IOException error)
-            {
-                System.out.println("ERROR: IOException");
-            }
-
+            HighScore highscore = new HighScore();
         }
         if(e.getSource()==wyjdz){
             System.exit(0);

@@ -19,7 +19,7 @@ public class Plansza extends JFrame implements ActionListener {
     private double proporcjaY;
     private double droga;
 
-  //  private JMenuBar menuBar;
+    //  private JMenuBar menuBar;
     private JMenuItem wyjdz;
     private JMenuItem pauza;
 
@@ -34,7 +34,7 @@ public class Plansza extends JFrame implements ActionListener {
     private int przesuniecieWPionie;
     private Random generator = new Random();
     private int losowa=generator.nextInt(4);;
-//    private int losowa2=generator.nextInt(4);
+    //    private int losowa2=generator.nextInt(4);
     private boolean stoper=false;
     private boolean active;
     private Thread th;
@@ -45,9 +45,9 @@ public class Plansza extends JFrame implements ActionListener {
     int czas=10;
 
 
-     private Balon Naboj;
- //   private Balon NowyNaboj;
- //   private Balon zmianaNaboju;
+    private Balon Naboj;
+    //   private Balon NowyNaboj;
+    //   private Balon zmianaNaboju;
 //    BufferedImage dbImage = new BufferedImage(11 * 60, 15 * 60, BufferedImage.TYPE_INT_ARGB);
 //    Graphics dbg = dbImage.getGraphics();
 
@@ -65,7 +65,7 @@ public class Plansza extends JFrame implements ActionListener {
         StworzPustaPlansze(odczyt.WYSOKOSC, odczyt.SZEROKOSC);
         setTitle("Bubble Hit");
         setLocationRelativeTo(null);
-        Naboj = new Balon(getKolor(99), (getWidth() / 2) - 30, getHeight() - 120);
+        Naboj = new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
         pociski.add(Naboj);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -79,20 +79,21 @@ public class Plansza extends JFrame implements ActionListener {
             }
         }
         ActionListener listener = new TimeListener();
+
         int czas = 5;
         tm = new Timer(czas, listener);
         tm.start();
         MouseListenerPlansza();
 
-       // NowyNaboj = new Balon(getWidth() - 80, getHeight() - 70 );
-    //    int czas = 5;
-     //   Timer tm = new Timer(czas, this);
-     //   tm.start();
+        // NowyNaboj = new Balon(getWidth() - 80, getHeight() - 70 );
+        //    int czas = 5;
+        //   Timer tm = new Timer(czas, this);
+        //   tm.start();
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 dispose();
-                Menu okienko = new Menu();
+                MainMenu okienko = new MainMenu();
             }
 
 
@@ -118,7 +119,7 @@ public class Plansza extends JFrame implements ActionListener {
         });*/
     }
 
-        public void MouseListenerPlansza() {
+    public void MouseListenerPlansza() {
         this.addMouseListener(new MouseAdapter() {
             /**
              * {@inheritDoc}
@@ -132,7 +133,7 @@ public class Plansza extends JFrame implements ActionListener {
 
                 System.out.println(e.getPoint());
 
-                Polozenie gdzieKliknieto = new Polozenie(e.getX(), e.getY());
+                /*Polozenie gdzieKliknieto = new Polozenie(e.getX(), e.getY());
                 przesuniecieWPoziomie = gdzieKliknieto.getWsplX() - ((pociski.lastElement().getWsplX()+30)*(getWidth()/600));
                 przesuniecieWPionie = gdzieKliknieto.getWsplY() - pociski.lastElement().getWsplY()-30;
                 droga = Math.sqrt(Math.pow(przesuniecieWPionie,2) + Math.pow(przesuniecieWPoziomie,2)); //zmiana
@@ -141,11 +142,38 @@ public class Plansza extends JFrame implements ActionListener {
                 PRZESUNIECIEX = Math.abs(PRZESUNIECIE * proporcjaX);
                 PRZESUNIECIEY = Math.abs(PRZESUNIECIE * proporcjaY);
                 active = true;
+                stoper = false;*/
+                Polozenie gdzieKliknieto = new Polozenie(e.getX(), e.getY());
+                //Polozenie polozenieWyrzutni = new Polozenie(Naboj.getWsplX(), Naboj.getWsplY());
+                double s1 = getWidth(); //pobierana szerokosc
+                double s2 = (odczyt.SZEROKOSC)*60; // szerokosc ustalona
+                double wsps = s1/s2; //wspolczynnik szerokosci
+                double s3 = (Naboj.getWsplX())*wsps; //potrzebna nam zmiana typu double
+                int su3 = (int)s3; //potrzebna nam zmiana typu int
+                double s4 = (gdzieKliknieto.getWsplX());
+                int su4 = (int) s4;
+                przesuniecieWPoziomie = su4 - su3/*((Naboj.getWsplX()+30)*(getWidth()/((SZEROKOSC-1)*60)))*/;
+                double w1 = getHeight(); //pobierana wysokosc
+                double w2 = (odczyt.WYSOKOSC*60); // wysokosc ustalona
+                double wspw = w1/w2; //wspolczynnik wysokosci
+                double w3 = (Naboj.getWsplY())*wspw; //potrzebna nam zmiana typu double
+                int wu3 = (int)w3; //potrzebna nam zmiana typu int
+                double w4 = (gdzieKliknieto.getWsplY());
+                int wu4 = (int) w4;
+                przesuniecieWPionie = wu4 - wu3/*(Naboj.getWsplY()+30)*//*((Naboj.getWsplY()+30))*//*(getHeight()/(WYSOKOSC*60)))*/;
+                droga = Math.sqrt(Math.pow(przesuniecieWPionie,2) + Math.pow(przesuniecieWPoziomie,2)); //zmiana
+                // System.out.println("droga przesuniecieX przesuniecieY " + droga + przesuniecieWPoziomie + przesuniecieWPionie);
+                proporcjaX = przesuniecieWPoziomie / droga;
+                proporcjaY = przesuniecieWPionie / droga;
+                PRZESUNIECIEX = Math.abs(PRZESUNIECIE* (1/wsps)* proporcjaX);
+                PRZESUNIECIEY = Math.abs(PRZESUNIECIE* (1/wspw)* proporcjaY);
+                active = true;
                 stoper = false;
+
             }
 
         });
-        }
+    }
     /**
      *usypia watek na n ms
      */
@@ -187,7 +215,7 @@ public class Plansza extends JFrame implements ActionListener {
         }
 
 
-        if (pociski.lastElement().getWsplY() >= 60 && pociski.lastElement().getWsplY() <= getHeight() - 60) {
+        if (pociski.lastElement().getWsplY() >= 60 && pociski.lastElement().getWsplY() <= (odczyt.WYSOKOSC-1)*60)/*getHeight() - 60)*/ {
             if (przesuniecieWPionie < 0) {
                 pociski.lastElement().setWsplY((int) (pociski.lastElement().getWsplY() - PRZESUNIECIEY));
                 if (przesuniecieWPionie > 0) {
@@ -203,13 +231,21 @@ public class Plansza extends JFrame implements ActionListener {
                 }
                 int dx = n*60;
                 pociski.lastElement().setWsplX(dx);
-                PRZESUNIECIEY = 0;
-                PRZESUNIECIEX = 0;
+                /*PRZESUNIECIEY = 0;
+                PRZESUNIECIEX = 0;*/
+                stoper=true;
+                pociski.lastElement().setWsplX((pociski.lastElement().getWsplX()/60));
+                pociski.lastElement().setWsplY((pociski.lastElement().getWsplY()/60));
+                displayedBalloons.add(pociski.lastElement());
+                pociski.clear();
+                Naboj=new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
+                pociski.add(Naboj);
+
             }
 
 
-            if (pociski.lastElement().getWsplY() >= getHeight() - 60) {
-                pociski.lastElement().setWsplY(getHeight() - 60);
+            if (pociski.lastElement().getWsplY() >= (odczyt.WYSOKOSC-1) * 60) {
+                pociski.lastElement().setWsplY((odczyt.WYSOKOSC-1) * 60);
                 PRZESUNIECIEY = -1 * PRZESUNIECIEY;
             }
         }
@@ -224,20 +260,20 @@ public class Plansza extends JFrame implements ActionListener {
             int dx = n*60;
             pociski.lastElement().setWsplX(dx);
             int m=0;
-            while(pociski.lastElement().getWsplY()>m*60) {
+            while(pociski.lastElement().getWsplY()>m*60+30) {
                 m++;
             }
             int dy = m*60;
             pociski.lastElement().setWsplY(dy);
-           // PRZESUNIECIEX=0;
-         //   PRZESUNIECIEY=0;
+            // PRZESUNIECIEX=0;
+            //   PRZESUNIECIEY=0;
 
             stoper=true;
             pociski.lastElement().setWsplX((pociski.lastElement().getWsplX()/60));
             pociski.lastElement().setWsplY((pociski.lastElement().getWsplY()/60));
             displayedBalloons.add(pociski.lastElement());
             pociski.clear();
-            Naboj=new Balon(getKolor(99), (getWidth() / 2) - 30, getHeight() - 120);
+            Naboj=new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
             pociski.add(Naboj);
         }
 
@@ -246,7 +282,7 @@ public class Plansza extends JFrame implements ActionListener {
 
     private boolean CzyDrogaWolna(Vector<Balon> Balloons){
         for (Balon b: Balloons){
-            if (Math.sqrt(Math.pow(b.getWsplX() * 60 - (pociski.lastElement().getWsplX()),2)+Math.pow(Math.abs(b.getWsplY() * 60  - (pociski.lastElement().getWsplY())),2))<=45) {
+            if (Math.sqrt(Math.pow(b.getWsplX() * 60 - (pociski.lastElement().getWsplX()),2)+Math.pow(Math.abs(b.getWsplY() * 60  - (pociski.lastElement().getWsplY())),2))<=50) {
                 return false;
             }
         }
@@ -309,7 +345,7 @@ public class Plansza extends JFrame implements ActionListener {
         for(Balon b : pociski){
             switch (b.getKolor()) {
                 case ZOLTY:
-                   g.setColor(Color.YELLOW);
+                    g.setColor(Color.YELLOW);
                     b.setObrazekBalonu(img = new ImageIcon("zolty.png").getImage());
                     break;
                 case CZERWONY:
@@ -318,10 +354,10 @@ public class Plansza extends JFrame implements ActionListener {
                     break;
                 case ZIELONY:
                     g.setColor(Color.GREEN);
-                   b.setObrazekBalonu(img = new ImageIcon("zielony.png").getImage());
+                    b.setObrazekBalonu(img = new ImageIcon("zielony.png").getImage());
                     break;
                 case NIEBIESKI:
-                                       g.setColor(Color.BLUE);
+                    g.setColor(Color.BLUE);
                     b.setObrazekBalonu(img = new ImageIcon("niebieski.png").getImage());
                     break;
                 default:
