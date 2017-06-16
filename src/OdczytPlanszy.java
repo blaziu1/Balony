@@ -12,6 +12,7 @@ class OdczytPlanszy {
     Vector<Polozenie> polozenia = new Vector<>();
     Vector<Balon> balony = new Vector<>();
     Properties pola = new Properties();
+    
     private void WczytajPole(String line) {
 
         String[] balonString = line.split("\\s+");
@@ -19,9 +20,8 @@ class OdczytPlanszy {
             int wsplX = Integer.parseInt(balonString[0]);
             int wsplY = Integer.parseInt(balonString[1]);
             int kolorInt = Integer.parseInt(balonString[2]);
-            Kolor kolor;
             Polozenie wspolrzedneBalona = new Polozenie(wsplX, wsplY);
-            kolor = getKolor(kolorInt);
+            Kolor kolor = getKolor(kolorInt);
             Balon balon = new Balon(kolor, wsplX, wsplY);
             balony.add(balon);
             for (Polozenie p : polozenia) {
@@ -45,8 +45,6 @@ class OdczytPlanszy {
                     SZEROKOSC = Integer.parseInt(wymiaryString[1]);
                     WYSOKOSC = Integer.parseInt(wymiaryString[2]);
 
-  //                  setSize(SZEROKOSC * 60, WYSOKOSC * 60);
-  //                  StworzPustaPlansze(WYSOKOSC, SZEROKOSC);
 
                     line = br.readLine();
                 } else {

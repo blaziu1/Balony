@@ -6,7 +6,7 @@ import java.awt.*;
 public class Balon {
     Kolor kolor;
     private Image obrazekBalonu;
-  //  boolean czyIstnieje;
+    boolean czyIstnieje;
     private int wsplX;
     private int wsplY;
 
@@ -18,19 +18,19 @@ public class Balon {
      */
     public Balon(Kolor kolor) {
         this.kolor = kolor;
-      //  czyIstnieje=true;
+        czyIstnieje=true;
 
     }
     public Balon(Kolor kolor, int wsplX, int wsplY){
         this.kolor = kolor;
         this.wsplX = wsplX;
         this.wsplY = wsplY;
-       // this.czyIstnieje = true;
+        this.czyIstnieje = true;
     }
     public Balon(int wsplX, int wsplY){
         this.wsplX = wsplX;
         this.wsplY = wsplY;
-     //   this.czyIstnieje = true;
+        this.czyIstnieje = true;
     }
 
     public int getWsplX() {
@@ -56,7 +56,7 @@ public class Balon {
 
     public Balon() {
         kolor=Kolor.brak;
-    //    czyIstnieje=false;
+        czyIstnieje=false;
     }
     public Image getObrazekBalonu() {
         return obrazekBalonu;

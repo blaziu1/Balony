@@ -46,7 +46,8 @@ public class Menu extends JFrame implements ActionListener{
             try {
                 dispose();
                 Plansza plansza = new Plansza(plikKofiguracyjny);
-                EventQueue.invokeLater(() -> plansza.setVisible(true));
+            //    EventQueue.invokeLater(() -> plansza.setVisible(true));
+                plansza.setVisible(true);
 
             }
             catch (IOException error)
