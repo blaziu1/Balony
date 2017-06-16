@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -13,7 +15,13 @@ public class HighScore extends JFrame /*implements ActionListener*/ {
     private String[] Wyniki = new String[SCORES_AMOUNT];
     HighScore() throws FileNotFoundException{
         super("Najlepsze wyniki");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      //  setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+                                   public void windowClosing(WindowEvent e) {
+                                       dispose();
+                                       MainMenu okienko = new MainMenu();
+                                   }
+                               });
         setSize(350, 500);
         setLocationRelativeTo(null);
         Scanner fileIn = new Scanner(new File("highscore.txt"));

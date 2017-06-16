@@ -1,10 +1,12 @@
+import static java.lang.System.in;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-
+import java.util.Scanner;
 import java.util.*;
-
+import java.io.File;
 import javax.swing.*;
 import javax.swing.Timer;
 
@@ -26,6 +28,7 @@ public class Plansza extends JFrame implements ActionListener {
     private  double PRZESUNIECIEY;
     private int przesuniecieWPoziomie;
     private int przesuniecieWPionie;
+    private String nick;
     private Random generator = new Random();
     private boolean stoper=false;
     private boolean active;
@@ -34,7 +37,9 @@ public class Plansza extends JFrame implements ActionListener {
     private OdczytPlanszy odczyt=new OdczytPlanszy();
     private Vector<Balon> pociski = new Vector<>();
     private Vector<Balon> displayedBalloons = new Vector<>();
-    int czas=10;
+   // int czas=10;
+   private int score=0;
+    private int licznik=0;
 
 
     private Balon Bullet;
@@ -56,7 +61,7 @@ public class Plansza extends JFrame implements ActionListener {
         odczyt.Wczytaj(plikStartowy);
         displayedBalloons =odczyt.balony;
         setSize(odczyt.SZEROKOSC * 60, odczyt.WYSOKOSC * 60);
-        StworzPustaPlansze(odczyt.WYSOKOSC, odczyt.SZEROKOSC);
+    //    StworzPustaPlansze(odczyt.WYSOKOSC, odczyt.SZEROKOSC);
         setTitle("Bubble Hit");
         setLocationRelativeTo(null);
         Bullet = new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
@@ -70,7 +75,15 @@ public class Plansza extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e){
                 if(!stoper){
                     modyfikacjaPolozenia();
+                    checkStatus();
                     repaint();
+                }
+                if(!checkStatus()){
+                    ending();
+                }
+                if(licznik==3)
+                {
+                    addBallons();
                 }
               //  if(!checkStatus()){
               //      System.out.println("1");
@@ -118,7 +131,7 @@ public class Plansza extends JFrame implements ActionListener {
         });*/
     }
 
-    public void MouseListenerPlansza() {
+    private void MouseListenerPlansza() {
         this.addMouseListener(new MouseAdapter() {
             /**
              * {@inheritDoc}
@@ -170,6 +183,10 @@ public class Plansza extends JFrame implements ActionListener {
                 PRZESUNIECIEY = Math.abs(PRZESUNIECIE* (1/wspw)* proporcjaY);
                 active = true;
                 stoper = false;
+                if(gdzieKliknieto.getWsplY()>pociski.lastElement().getWsplY()){
+                    PRZESUNIECIEX=0;
+                    PRZESUNIECIEY=0;
+                }
 
             }
 
@@ -284,7 +301,7 @@ public class Plansza extends JFrame implements ActionListener {
              pociski.clear();
              pociski.add(Bullet);
              pociski.add(SecBullet);
-        //    pociski.add(Bullet);
+             licznik++;
         }
 
 
@@ -299,10 +316,17 @@ public class Plansza extends JFrame implements ActionListener {
         return true;
     }
 
+    private void addBallons(){
+        int size = displayedBalloons.size();
+        for (Balon displayedBalloon : displayedBalloons) {
+            displayedBalloon.setWsplY(displayedBalloon.getWsplY() + 2);
+        }
+        licznik=0;
+    }
+
     private boolean checkStatus() {
         for (Balon b : displayedBalloons) {
             if (b.getWsplY() == 13) {
-                System.out.println("1");
                 return false;
             }
         }
@@ -327,7 +351,11 @@ public class Plansza extends JFrame implements ActionListener {
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, odczyt.SZEROKOSC * 60, 60);
         g.fillRect(0, odczyt.WYSOKOSC * 60 - 60, odczyt.SZEROKOSC * 60, 60);
-        for (Balon b : displayedBalloons) {
+        g.setColor(Color.BLACK);
+        for(int kr = 0; kr<odczyt.WYSOKOSC*60; kr+=20) {
+            g.fillRect(kr, (odczyt.WYSOKOSC - 2) * 60 - 2, 10, 1);
+        }
+            for (Balon b : displayedBalloons) {
             switch (b.getKolor()) {
                 case ZOLTY:
                     g.setColor(Color.YELLOW);
@@ -404,7 +432,7 @@ public class Plansza extends JFrame implements ActionListener {
      * @param SZEROKOSC planszy w ilosci rzed�w balon�w
      */
 
-    private void StworzPustaPlansze(int WYSOKOSC, int SZEROKOSC) {
+ /*   private void StworzPustaPlansze(int WYSOKOSC, int SZEROKOSC) {
         for (int i = 0; i < WYSOKOSC; i++) {
             for (int j = 0; j < SZEROKOSC; j++) {
 
@@ -413,7 +441,7 @@ public class Plansza extends JFrame implements ActionListener {
                 odczyt.pola.put(wspolrzedne, new Balon());
             }
         }
-    }
+    }*/
 
     /**
      * Metoda zwraca kolor na podstawie dostarczonego kodu numerycznego.
@@ -444,9 +472,99 @@ public class Plansza extends JFrame implements ActionListener {
                 break;
             default:
                 kolor = Kolor.brak;
-
         }
         return kolor;
+    }
+
+    private void updateHighScore(String line, int scr) throws FileNotFoundException{
+        int[] scores = new int[5];
+        int i=0;
+        String[] lines = new String[5];
+        String[] names = new String[5];
+        Scanner odczyt = new Scanner(new File("highscore.txt"));
+        while (odczyt.hasNext()) {
+            lines[i]=odczyt.nextLine();
+            String[] divided = lines[i].split("-");
+            String[] divided2 = lines[i].split("\\s+");
+            names[i] = divided2[1];
+            scores[i]=Integer.parseInt(divided[1]);
+            i++;
+        }
+        for (int j=0; j<5; j++){
+            if(scores[j]<scr){
+                switch(j){
+                    case 4:
+                        names[4]=line;
+                        scores[4]=scr;
+                        break;
+                    case 3:
+                        names[4]=names[3];
+                        scores[4]=scores[3];
+                        names[3]=line;
+                        scores[3]=scr;
+                        break;
+                    case 2:
+                        names[4]=names[3];
+                        scores[4]=scores[3];
+                        names[3]=names[2];
+                        scores[3]=scores[2];
+                        names[2]=line;
+                        scores[2]=scr;
+                        break;
+                    case 1:
+                        names[4]=names[3];
+                        scores[4]=scores[3];
+                        names[3]=names[2];
+                        scores[3]=scores[2];
+                        names[2]=names[1];
+                        scores[2]=scores[1];
+                        names[1]=line;
+                        scores[1]=scr;
+                        break;
+                    case 0:
+                        names[4]=names[3];
+                        scores[4]=scores[3];
+                        names[3]=names[2];
+                        scores[3]=scores[2];
+                        names[2]=names[1];
+                        scores[2]=scores[1];
+                        names[1]=names[0];
+                        scores[1]=scores[0];
+                        names[0]=line;
+                        scores[0]=scr;
+                        break;
+                }
+                break;
+            }
+        }
+        PrintWriter save = new PrintWriter("highscore.txt");
+        for(int k=0; k<5; k++){
+            save.println((k+1)+". "+names[k]+" -"+scores[k]);
+        }
+        save.close();
+    }
+
+    private void ending() {
+        String[] options = {"OK"};
+        JPanel panel = new JPanel();
+        JLabel lbl = new JLabel("Twój wynik: "+score+". Wpisz Twoje imie: ");
+        JTextField txt = new JTextField(10);
+        panel.add(lbl);
+        panel.add(txt);
+        int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
+        if(selectedOption == 0)
+        {
+            nick = txt.getText();
+            try{
+                updateHighScore(nick, score);
+            }
+            catch (IOException error){
+                System.out.println("ERROR: IOException");
+            }
+            tm.stop();
+            dispose();
+            MainMenu menu = new MainMenu();
+        }
     }
 
     /**
@@ -458,7 +576,7 @@ public class Plansza extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == this.wyjdz) {
-            int odp = JOptionPane.showConfirmDialog(this, "Czy na pewno chcesz wyj��?", "Hola hola!", JOptionPane.YES_NO_OPTION);
+            int odp = JOptionPane.showConfirmDialog(this, "Czy na pewno chcesz wyj��?", "Hola hola!", JOptionPane.YES_OPTION);
             if (odp == JOptionPane.YES_OPTION) {
                 dispose();
                 Menu okienko = new Menu();
