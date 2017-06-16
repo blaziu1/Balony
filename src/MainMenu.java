@@ -44,9 +44,16 @@ public class MainMenu extends JFrame implements ActionListener{
             ModeMenu modeMenu = new ModeMenu();
         }
         if(e.getSource()==wyniki){
-            dispose();
+            try{
+                dispose();
 
-            HighScore highscore = new HighScore();
+                HighScore highscore = new HighScore();
+            }
+            catch (IOException error)
+            {
+                System.out.println("ERROR: IOException");
+            }
+
         }
         if(e.getSource()==wyjdz){
             System.exit(0);
