@@ -8,7 +8,7 @@ import java.util.Vector;
 
 
 class OdczytPlanszy {
-    int WYSOKOSC, SZEROKOSC;
+    int WYSOKOSC, SZEROKOSC, DESCEND;
     Vector<Polozenie> polozenia = new Vector<>();
     Vector<Balon> balony = new Vector<>();
     Properties pola = new Properties();
@@ -44,7 +44,7 @@ class OdczytPlanszy {
                     String[] wymiaryString = line.split("\\s+");
                     SZEROKOSC = Integer.parseInt(wymiaryString[1]);
                     WYSOKOSC = Integer.parseInt(wymiaryString[2]);
-
+                    DESCEND = Integer.parseInt(wymiaryString[3]);
 
                     line = br.readLine();
                 } else {

@@ -3,23 +3,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
 
-/**
- * Created by Błażej on 2017-06-17.
- */
-public class Game {
-    String nick;
 
-    public void descendBallons(Vector<Balon> Balloons) {
+class Game {
+
+
+    void descendBallons(Vector<Balon> Balloons, int descend) {
         for (Balon b : Balloons) {
-            b.setWsplY(b.getWsplY() + 2);
+            b.setWsplY(b.getWsplY() + descend);
         }
     }
 
-    public Vector<Balon> addBallons(){
+    Vector<Balon> addBallons(){
         OdczytPlanszy load=new OdczytPlanszy();
         try{
             load.Wczytaj(new File("fabularnysredni.txt"));
@@ -30,7 +27,7 @@ public class Game {
         return load.balony;
     }
 
-    public boolean checkStatus(Vector<Balon> Balloons) {
+    boolean checkStatus(Vector<Balon> Balloons) {
         for (Balon b : Balloons) {
             if (b.getWsplY() == 13) {
                 return false;
@@ -39,7 +36,7 @@ public class Game {
         return true;
     }
 
-    public void ending(int score) {
+    void ending(int score) {
         String[] options = {"OK"};
         JPanel panel = new JPanel();
         JLabel lbl = new JLabel("Twój wynik: "+score+". Wpisz Twoje imie: ");
@@ -49,7 +46,7 @@ public class Game {
         int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
         if(selectedOption == 0)
         {
-            nick = txt.getText();
+            String nick = txt.getText();
             if(nick.contains(" ")){
                 String[] divided2 = nick.split("\\s+");
                 nick = String.join("", divided2);

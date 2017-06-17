@@ -89,10 +89,13 @@ public class Plansza extends JFrame implements ActionListener {
                 }
                 if(licznik==3)
                 {
-                    game.descendBallons(displayedBalloons);
+                    game.descendBallons(displayedBalloons, odczyt.DESCEND);
                     licznik=0;
+                    if(odczyt.DESCEND!=0){
                     for(int i=0;i<game.addBallons().size();i++)
-                    displayedBalloons.add(game.addBallons().get(i));
+                        displayedBalloons.add(game.addBallons().get(i));
+                }
+
                 }
             }
         }
@@ -198,12 +201,12 @@ public class Plansza extends JFrame implements ActionListener {
      *usypia watek na n ms
      */
 
-    private void Sleeeep(int n) {
+ /*   private void Sleeeep(int n) {
         try {
             Thread.sleep(n);
         } catch (InterruptedException e1) {
             System.out.println("InterruptedException");
-        }}
+        }}*/
     /**
      * modyfikuje połozenie balonu-pocisku
      */
