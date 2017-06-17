@@ -1,14 +1,12 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Vector;
 
 
 class OdczytPlanszy {
-    int WYSOKOSC, SZEROKOSC, DESCEND;
+    int WYSOKOSC, SZEROKOSC, DESCEND, numOfCollors;
     Vector<Polozenie> polozenia = new Vector<>();
     Vector<Balon> balony = new Vector<>();
     Properties pola = new Properties();
@@ -20,6 +18,13 @@ class OdczytPlanszy {
             int wsplX = Integer.parseInt(balonString[0]);
             int wsplY = Integer.parseInt(balonString[1]);
             int kolorInt = Integer.parseInt(balonString[2]);
+            try{
+                readDifficulty();
+               }
+            catch(IOException e)
+                {
+                    System.out.println("ERROR: IOException");
+                }
             Polozenie wspolrzedneBalona = new Polozenie(wsplX, wsplY);
             Kolor kolor = getKolor(kolorInt);
             Balon balon = new Balon(kolor, wsplX, wsplY);
@@ -72,11 +77,20 @@ class OdczytPlanszy {
 
         return line;
     }
+
+    public void setNumOfCollors(int num){
+        this.numOfCollors=num;
+    }
+    public void readDifficulty() throws FileNotFoundException{
+        Scanner in = new Scanner(new File("difficulty.txt"));
+        String zdanie = in.nextLine();
+        numOfCollors=Integer.parseInt(zdanie);
+    }
     public Kolor getKolor(int kolorInt) {
         Kolor kolor;
         if (kolorInt == 99) {
             Random rand = new Random();
-            kolorInt = rand.nextInt(4) + 1;
+            kolorInt = rand.nextInt(numOfCollors) + 1;
 
         }
         switch (kolorInt) {

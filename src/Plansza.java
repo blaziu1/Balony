@@ -41,14 +41,8 @@ public class Plansza extends JFrame implements ActionListener {
     private int score=9;
     private int licznik=0;
 
-
     private Balon Bullet;
     private Balon SecBullet;
-
-    //   private Balon NowyNaboj;
-    //   private Balon zmianaNaboju;
-//    BufferedImage dbImage = new BufferedImage(11 * 60, 15 * 60, BufferedImage.TYPE_INT_ARGB);
-//    Graphics dbg = dbImage.getGraphics();
 
     /**
      * Konstruktor wczytuj�cy dane planszy gry z pliku konfiguracyjnego.

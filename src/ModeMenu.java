@@ -12,6 +12,7 @@ public class ModeMenu  extends JFrame implements ActionListener {
     private JButton fabularny;
     private JButton arcade;
     private JButton powrot;
+    public int numOfCollors;
     ModeMenu() {
         super("Bubble Hit");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -32,6 +33,7 @@ public class ModeMenu  extends JFrame implements ActionListener {
 
         setVisible(true);
     }
+
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==fabularny)
         {

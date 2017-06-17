@@ -27,6 +27,7 @@ public class MainMenu extends JFrame implements ActionListener{
         wyniki = new JButton("Wyniki");
         wyjdz = new JButton("Wyjdz");
         start.addActionListener(this);
+        opcje.addActionListener(this);
         wyjdz.addActionListener(this);
         wyniki.addActionListener(this);
 
@@ -37,6 +38,7 @@ public class MainMenu extends JFrame implements ActionListener{
 
         setVisible(true);
     }
+
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==start)
         {
@@ -54,6 +56,10 @@ public class MainMenu extends JFrame implements ActionListener{
                 System.out.println("ERROR: IOException");
             }
 
+        }
+        if(e.getSource()==opcje){
+            dispose();
+            Options options = new Options();
         }
         if(e.getSource()==wyjdz){
             System.exit(0);
