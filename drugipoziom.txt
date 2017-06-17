@@ -1,4 +1,4 @@
-#1PLIK TESTOWY
+﻿#1PLIK TESTOWY
 #2 poziom trudności : sredni
 #3 plansza 1
 WYMIARY 11 15 0
