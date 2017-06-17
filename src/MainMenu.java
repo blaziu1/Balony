@@ -55,7 +55,6 @@ public class MainMenu extends JFrame implements ActionListener{
             {
                 System.out.println("ERROR: IOException");
             }
-
         }
         if(e.getSource()==opcje){
             dispose();

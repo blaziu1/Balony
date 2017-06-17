@@ -40,7 +40,7 @@ public class Options extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e){
+    /*public void actionPerformed(ActionEvent e){
         if(e.getSource()==latwy)
         {
 
@@ -82,5 +82,27 @@ public class Options extends JFrame implements ActionListener {
         }
 
 
+    }*/
+    public void actionPerformed(ActionEvent e){
+        int difficultyCode;
+        if (e.getSource() == latwy) {
+            difficultyCode = 2;
+            }
+        else if (e.getSource() == sredni) {
+            difficultyCode = 3;
+        } else {
+            difficultyCode = 4;
+        }
+        dispose();
+
+        try {
+            PrintWriter save = new PrintWriter("difficulty.txt");
+            save.println(difficultyCode);
+            save.close();
+        } catch (IOException error) {
+            System.out.println("IOException");
+        }
+
+        MainMenu mainMenu = new MainMenu();
     }
 }

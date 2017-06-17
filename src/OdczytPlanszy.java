@@ -78,9 +78,6 @@ class OdczytPlanszy {
         return line;
     }
 
-    public void setNumOfCollors(int num){
-        this.numOfCollors=num;
-    }
     public void readDifficulty() throws FileNotFoundException{
         Scanner in = new Scanner(new File("difficulty.txt"));
         String zdanie = in.nextLine();
@@ -88,7 +85,7 @@ class OdczytPlanszy {
     }
     public Kolor getKolor(int kolorInt) {
         Kolor kolor;
-        if (kolorInt == 99) {
+        if (kolorInt == 6) {
             Random rand = new Random();
             kolorInt = rand.nextInt(numOfCollors) + 1;
 

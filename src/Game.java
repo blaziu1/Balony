@@ -8,6 +8,8 @@ import java.util.Vector;
 
 
 class Game {
+    final int NUM_OF_FILES=3;
+    static int map=0;
 
 
     void descendBallons(Vector<Balon> Balloons, int descend) {
@@ -34,6 +36,35 @@ class Game {
             }
         }
         return true;
+    }
+
+    void nextLevel(){
+        File[] files = new File[NUM_OF_FILES];
+        files[0] = new File("drugipoziom.txt");
+        files[1] = new File("trzecipoziom.txt");
+        files[2] = new File("czwartypoziom.txt");
+        try {
+            Plansza plansza1 = new Plansza(files[map]);
+            map++;
+            //    EventQueue.invokeLater(() -> plansza.setVisible(true));
+            plansza1.setVisible(true);
+        }
+        catch (IOException error)
+        {
+            System.out.println("ERROR: IOException");
+        }
+        catch (ArrayIndexOutOfBoundsException err){
+            String[] options = {"Hurra"};
+            JPanel panel = new JPanel();
+            JLabel lbl = new JLabel("Ukończyłeś tryb fabularny ");
+            panel.add(lbl);
+            int selectedOption = JOptionPane.showOptionDialog(null, panel,"Koniec gry", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
+            if(selectedOption == 0){
+                MainMenu menu = new MainMenu();
+                map=0;
+            }
+
+        }
     }
 
     void ending(int score) {
