@@ -2,7 +2,7 @@
 #2
 #3 tego nie wczytujemy bo to
 #4 komentarze
-WYMIARY 11 15
+WYMIARY 11 15 2
 #5
 #6
 #7

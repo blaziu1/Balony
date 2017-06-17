@@ -1,7 +1,7 @@
 ﻿#1PLIK TESTOWY
 #2 poziom trudności : sredni
 #3 plansza 2
-WYMIARY 11 15
+WYMIARY 11 15 0
 #X  Y     Kod Koloru
 0	1	4
 1	1	3
