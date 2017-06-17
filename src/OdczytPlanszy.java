@@ -72,7 +72,7 @@ class OdczytPlanszy {
 
         return line;
     }
-    private Kolor getKolor(int kolorInt) {
+    public Kolor getKolor(int kolorInt) {
         Kolor kolor;
         if (kolorInt == 99) {
             Random rand = new Random();

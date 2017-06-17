@@ -19,6 +19,8 @@ public class Plansza extends JFrame implements ActionListener {
     private double proporcjaX;
     private double proporcjaY;
     private double droga;
+    private JPanel window;
+    private JPanel upcomponent;
 
     private JMenuItem wyjdz;
     private JMenuItem pauza;
@@ -29,16 +31,14 @@ public class Plansza extends JFrame implements ActionListener {
     private int przesuniecieWPoziomie;
     private int przesuniecieWPionie;
     private String nick;
-    private Random generator = new Random();
     private boolean stoper=false;
     private boolean active;
     private Thread th;
     private Timer tm;
-    private OdczytPlanszy odczyt=new OdczytPlanszy();
+    public OdczytPlanszy odczyt=new OdczytPlanszy();
     private Vector<Balon> pociski = new Vector<>();
     private Vector<Balon> displayedBalloons = new Vector<>();
-   // int czas=10;
-   private int score=0;
+    private int score=9;
     private int licznik=0;
 
 
@@ -64,8 +64,12 @@ public class Plansza extends JFrame implements ActionListener {
     //    StworzPustaPlansze(odczyt.WYSOKOSC, odczyt.SZEROKOSC);
         setTitle("Bubble Hit");
         setLocationRelativeTo(null);
-        Bullet = new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
-        SecBullet = new Balon(getKolor(99), (odczyt.SZEROKOSC)*60 - 60, (odczyt.WYSOKOSC-1)*60);
+        window = new JPanel(new GridLayout(2,1));
+        upcomponent = new JPanel(new BorderLayout());
+        Game game=new Game();
+ //       addComponents();
+        Bullet = new Balon(odczyt.getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
+        SecBullet = new Balon(odczyt.getKolor(99), (odczyt.SZEROKOSC)*60 - 60, (odczyt.WYSOKOSC-1)*60);
         pociski.add(SecBullet);
         pociski.add(Bullet);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -75,22 +79,21 @@ public class Plansza extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e){
                 if(!stoper){
                     modyfikacjaPolozenia();
-                    checkStatus();
+                    game.checkStatus(displayedBalloons);
                     repaint();
                 }
-                if(!checkStatus()){
-                    ending();
+                if(!game.checkStatus(displayedBalloons)){
+                    game.ending(score);
+                    tm.stop();
+                    dispose();
                 }
                 if(licznik==3)
                 {
-                    descendBallons();
-                    System.out.println(addBallons().size());
-                    for(int i=0;i<addBallons().size();i++)
-                    displayedBalloons.add(addBallons().get(i));
+                    game.descendBallons(displayedBalloons);
+                    licznik=0;
+                    for(int i=0;i<game.addBallons().size();i++)
+                    displayedBalloons.add(game.addBallons().get(i));
                 }
-              //  if(!checkStatus()){
-              //      System.out.println("1");
-              //  }
             }
         }
         ActionListener listener = new TimeListener();
@@ -100,15 +103,11 @@ public class Plansza extends JFrame implements ActionListener {
         tm.start();
         MouseListenerPlansza();
 
-        // NowyNaboj = new Balon(getWidth() - 80, getHeight() - 70 );
-        //    int czas = 5;
-        //   Timer tm = new Timer(czas, this);
-        //   tm.start();
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 dispose();
-                MainMenu okienko = new MainMenu();
+                MainMenu mainMenu = new MainMenu();
             }
 
 
@@ -259,7 +258,7 @@ public class Plansza extends JFrame implements ActionListener {
                 pociski.lastElement().setWsplY((pociski.lastElement().getWsplY()/60));
                 displayedBalloons.add(pociski.lastElement());
                 pociski.clear();
-                Bullet =new Balon(getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
+                Bullet =new Balon(odczyt.getKolor(99), (odczyt.SZEROKOSC)*30 - 30, (odczyt.WYSOKOSC-2)*60);
                 pociski.add(Bullet);
 
             }
@@ -274,34 +273,34 @@ public class Plansza extends JFrame implements ActionListener {
         boolean czyMoznadalej = CzyDrogaWolna(displayedBalloons);
         if (!czyMoznadalej) {
 
-            int n=0;
-            while(pociski.lastElement().getWsplX()>n*60+30) {
+            int n = 0;
+            while (pociski.lastElement().getWsplX() > n * 60 + 30) {
                 n++;
             }
-            int dx = n*60;
+            int dx = n * 60;
             pociski.lastElement().setWsplX(dx);
-            int m=0;
-            while(pociski.lastElement().getWsplY()>m*60+30) {
+            int m = 0;
+            while (pociski.lastElement().getWsplY() > m * 60 + 30) {
                 m++;
             }
-            int dy = m*60;
+            int dy = m * 60;
             pociski.lastElement().setWsplY(dy);
-            // PRZESUNIECIEX=0;
-            //   PRZESUNIECIEY=0;
 
-            stoper=true;
-            pociski.lastElement().setWsplX((pociski.lastElement().getWsplX()/60));
-            pociski.lastElement().setWsplY((pociski.lastElement().getWsplY()/60));
+            stoper = true;
+            pociski.lastElement().setWsplX((pociski.lastElement().getWsplX() / 60));
+            pociski.lastElement().setWsplY((pociski.lastElement().getWsplY() / 60));
             displayedBalloons.add(pociski.lastElement());
-            Bullet =new Balon(getKolor(99), (odczyt.SZEROKOSC)*60 - 60, (odczyt.WYSOKOSC-1)*60);
-             SecBullet = pociski.firstElement();
-             SecBullet.setWsplX((odczyt.SZEROKOSC)*30 - 30);
-             SecBullet.setWsplY((odczyt.WYSOKOSC-2)*60);
-             pociski.clear();
-             pociski.add(Bullet);
-             pociski.add(SecBullet);
-             licznik++;
+            Bullet = new Balon(odczyt.getKolor(99), (odczyt.SZEROKOSC) * 60 - 60, (odczyt.WYSOKOSC - 1) * 60);
+            SecBullet = pociski.firstElement();
+            SecBullet.setWsplX((odczyt.SZEROKOSC) * 30 - 30);
+            SecBullet.setWsplY((odczyt.WYSOKOSC - 2) * 60);
+            pociski.clear();
+            pociski.add(Bullet);
+            pociski.add(SecBullet);
+            licznik++;
         }
+
+
 
 
     }
@@ -315,32 +314,21 @@ public class Plansza extends JFrame implements ActionListener {
         return true;
     }
 
-    private void descendBallons(){
-        for (Balon db : displayedBalloons) {
-            db.setWsplY(db.getWsplY() + 2);
-        }
-        licznik=0;
-    }
-
-    private Vector<Balon> addBallons(){
-        OdczytPlanszy load=new OdczytPlanszy();
-        try{
-            load.Wczytaj(new File("fabularnysredni.txt"));
-        }
-        catch(IOException error){
-            System.out.println("ERROR: IOException");
-        }
-        return load.balony;
-    }
-
-    private boolean checkStatus() {
-        for (Balon b : displayedBalloons) {
-            if (b.getWsplY() == 13) {
-                return false;
-            }
-        }
-        return true;
-    }
+   /* public void addComponents(){
+        JTextField wynik = new JTextField("        Wynik");
+        wynik.setPreferredSize(new Dimension(100,35));
+        wynik.setEditable(false);
+        JTextField zycia = new JTextField("Czas ");
+        zycia.setEditable(false);
+        zycia.setHorizontalAlignment(JTextField.CENTER);
+        JButton button = new JButton(("pauza"));
+        button.setPreferredSize(new Dimension(100,40));
+        upcomponent.add(wynik);
+        upcomponent.add(zycia,BorderLayout.CENTER);
+        upcomponent.add(button,BorderLayout.EAST);
+        window.add(upcomponent);
+        window.add(this);
+    }*/
 
 
 
@@ -387,7 +375,6 @@ public class Plansza extends JFrame implements ActionListener {
             }
             if (g.getColor() != Color.WHITE)
             {
-                //g.fillOval(p.getWsplX() * 60, p.getWsplY() * 60, 60, 60);
                 g.drawImage(b.getObrazekBalonu(), b.getWsplX() * 60, b.getWsplY() * 60, null);
             }
         }
@@ -431,149 +418,6 @@ public class Plansza extends JFrame implements ActionListener {
         Graphics2D gg = scaled.createGraphics();
         gg.drawImage(dbImage, 0, 0, getWidth(), getHeight(), null);
         g.drawImage(scaled, 0, 0, this);
-    }
-
-
-    /**
-     * Metoda tworzy pusta plansze o podanych wymiarach.
-     *
-     * @param WYSOKOSC  planszy w ilosci rzed�w balon�w
-     * @param SZEROKOSC planszy w ilosci rzed�w balon�w
-     */
-
- /*   private void StworzPustaPlansze(int WYSOKOSC, int SZEROKOSC) {
-        for (int i = 0; i < WYSOKOSC; i++) {
-            for (int j = 0; j < SZEROKOSC; j++) {
-
-                Polozenie wspolrzedne = new Polozenie(j, i);
-                odczyt.polozenia.add(wspolrzedne);
-                odczyt.pola.put(wspolrzedne, new Balon());
-            }
-        }
-    }*/
-
-    /**
-     * Metoda zwraca kolor na podstawie dostarczonego kodu numerycznego.
-     *
-     * @param kolorInt kod koloru
-     * @return zwracany obiekt Kolor
-     */
-
-    private Kolor getKolor(int kolorInt) {
-        Kolor kolor;
-        if (kolorInt == 99) {
-            Random rand = new Random();
-            kolorInt = rand.nextInt(4) + 1;
-
-        }
-        switch (kolorInt) {
-            case 1:
-                kolor = Kolor.ZIELONY;
-                break;
-            case 2:
-                kolor = Kolor.CZERWONY;
-                break;
-            case 3:
-                kolor = Kolor.NIEBIESKI;
-                break;
-            case 4:
-                kolor = Kolor.ZOLTY;
-                break;
-            default:
-                kolor = Kolor.brak;
-        }
-        return kolor;
-    }
-
-    private void updateHighScore(String line, int scr) throws FileNotFoundException{
-        int[] scores = new int[5];
-        int i=0;
-        String[] lines = new String[5];
-        String[] names = new String[5];
-        Scanner odczyt = new Scanner(new File("highscore.txt"));
-        while (odczyt.hasNext()) {
-            lines[i]=odczyt.nextLine();
-            String[] divided = lines[i].split("-");
-            String[] divided2 = lines[i].split("\\s+");
-            names[i] = divided2[1];
-            scores[i]=Integer.parseInt(divided[1]);
-            i++;
-        }
-        for (int j=0; j<5; j++){
-            if(scores[j]<scr){
-                switch(j){
-                    case 4:
-                        names[4]=line;
-                        scores[4]=scr;
-                        break;
-                    case 3:
-                        names[4]=names[3];
-                        scores[4]=scores[3];
-                        names[3]=line;
-                        scores[3]=scr;
-                        break;
-                    case 2:
-                        names[4]=names[3];
-                        scores[4]=scores[3];
-                        names[3]=names[2];
-                        scores[3]=scores[2];
-                        names[2]=line;
-                        scores[2]=scr;
-                        break;
-                    case 1:
-                        names[4]=names[3];
-                        scores[4]=scores[3];
-                        names[3]=names[2];
-                        scores[3]=scores[2];
-                        names[2]=names[1];
-                        scores[2]=scores[1];
-                        names[1]=line;
-                        scores[1]=scr;
-                        break;
-                    case 0:
-                        names[4]=names[3];
-                        scores[4]=scores[3];
-                        names[3]=names[2];
-                        scores[3]=scores[2];
-                        names[2]=names[1];
-                        scores[2]=scores[1];
-                        names[1]=names[0];
-                        scores[1]=scores[0];
-                        names[0]=line;
-                        scores[0]=scr;
-                        break;
-                }
-                break;
-            }
-        }
-        PrintWriter save = new PrintWriter("highscore.txt");
-        for(int k=0; k<5; k++){
-            save.println((k+1)+". "+names[k]+" -"+scores[k]);
-        }
-        save.close();
-    }
-
-    private void ending() {
-        String[] options = {"OK"};
-        JPanel panel = new JPanel();
-        JLabel lbl = new JLabel("Twój wynik: "+score+". Wpisz Twoje imie: ");
-        JTextField txt = new JTextField(10);
-        panel.add(lbl);
-        panel.add(txt);
-        int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
-        if(selectedOption == 0)
-        {
-            nick = txt.getText();
-            try{
-                updateHighScore(nick, score);
-            }
-            catch (IOException error){
-                System.out.println("ERROR: IOException");
-            }
-            tm.stop();
-            dispose();
-            MainMenu menu = new MainMenu();
-        }
     }
 
     /**
