@@ -92,35 +92,50 @@ class Game {
      * Jesli imie zostalo wpisane, a wynik gracza jest lepszy od wynikow w pliku highscore.txt to jest on tam wpisywany.
      * @param score Wynik jaki uzyskal gracz podczas gry.
      */
-    void ending(int score) {
+    void ending(int score, int mode) {
         String[] options = {"OK"};
-        JPanel panel = new JPanel();
-        JLabel lbl = new JLabel("Twój wynik: "+score+". Wpisz Twoje imie: ");
-        JTextField txt = new JTextField(10);
-        panel.add(lbl);
-        panel.add(txt);
-        int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
-        if(selectedOption == 0)
-        {
-            String nick = txt.getText();
-            if(nick.contains(" ")){
-                String[] divided2 = nick.split("\\s+");
-                nick = String.join("", divided2);
-            }
-            if(nick.contains("-")){
-                nick = nick.replace('-', '_');
-            }
-            if(!nick.isEmpty())
+        if(mode==0){
+            JPanel panel = new JPanel();
+            JLabel lbl = new JLabel("Twój wynik: "+score+". Wpisz Twoje imie: ");
+            JTextField txt = new JTextField(10);
+            panel.add(lbl);
+            panel.add(txt);
+            int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
+            if(selectedOption == 0)
             {
-                try{
-                    updateHighScore(nick, score);
+                String nick = txt.getText();
+                if(nick.contains(" ")){
+                    String[] divided2 = nick.split("\\s+");
+                    nick = String.join("", divided2);
                 }
-                catch (IOException error){
-                    System.out.println("ERROR: IOException");
+                if(nick.contains("-")){
+                    nick = nick.replace('-', '_');
                 }
+                if(!nick.isEmpty())
+                {
+                    try{
+                        updateHighScore(nick, score);
+                    }
+                    catch (IOException error){
+                        System.out.println("ERROR: IOException");
+                    }
+                }
+                MainMenu menu = new MainMenu();
             }
-            MainMenu menu = new MainMenu();
         }
+        else{
+            JPanel panel = new JPanel();
+            JLabel lbl = new JLabel("Nie udało Ci się przejść trybu fabularnego. ");
+            panel.add(lbl);
+            int selectedOption = JOptionPane.showOptionDialog(null, panel,"Porażka", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
+            if(selectedOption == 0)
+            {
+                MainMenu menu = new MainMenu();
+            }
+
+        }
+
+
     }
 
     /**

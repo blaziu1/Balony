@@ -30,6 +30,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
     private Vector<Balloon> displayedBalloons = new Vector<>();
     private int score = 0;
     private int counter = 0;
+    private int counter2=1;
     private int release = 0;
 
     private Balloon bullet;
@@ -70,7 +71,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
                     repaint();
                 }
                 if (!game.checkStatus(displayedBalloons)) {
-                    game.ending(score);
+                    game.ending(score, odczyt.MODE);
                     tm.stop();
                     dispose();
                 }
@@ -83,7 +84,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
                     }
                     else{
                         game.descendBallons(displayedBalloons, odczyt.DESCENDFAB);
-                        counter = 0;
+                       // counter = 0;
                     }
                 }
                 if (odczyt.MODE == 1 && displayedBalloons.isEmpty()) {
@@ -258,8 +259,8 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 }
 
             }
-            if (pociski.lastElement().getyCoordinate() <= 60) {
-                pociski.lastElement().setyCoordinate(60);
+            if (pociski.lastElement().getyCoordinate() <= 60*counter2) {
+                pociski.lastElement().setyCoordinate(60*counter2);
                 int n = 0;
                 while (pociski.lastElement().getxCoordinate() > n * 60 + 30) {
                     n++;
@@ -303,7 +304,6 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 counter++;
                 disappearing();
                 release=0;
-                System.out.println(score);
             }
 
 
@@ -365,7 +365,6 @@ public class Map extends JFrame /*implements ActionListener*/ {
             counter++;
             disappearing();
             release=0;
-            System.out.println(score);
         }
 
 
@@ -500,8 +499,12 @@ public class Map extends JFrame /*implements ActionListener*/ {
 
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, odczyt.WIDTH * 60, odczyt.HEIGHT * 60);
-        g.setColor(Color.GRAY);
-        g.fillRect(0, 0, odczyt.WIDTH * 60, 60);
+        g.setColor(Color.CYAN);
+        if(counter==5&&odczyt.MODE==1){
+            counter2++;
+            counter=0;
+        }
+        g.fillRect(0, 0, odczyt.WIDTH * 60, 60*counter2);
         g.fillRect(0, odczyt.HEIGHT * 60 - 60, odczyt.WIDTH * 60, 60);
         g.setColor(Color.BLACK);
         for (int kr = 0; kr < odczyt.HEIGHT * 60; kr += 20) {
