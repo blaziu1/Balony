@@ -8,12 +8,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by Błażej on 2017-06-17.
+ * Klasa wyswietlajaca okno z wyborem poziomu trudnosci gry.
  */
 public class Options extends JFrame implements ActionListener {
     private JButton latwy;
     private JButton sredni;
     private JButton trudny;
+
+    /**
+     * Konstruktor, tworzy okno z trzema przyciskami umozliwiajacymi wybor poziomu trudnosci.
+     * Poziom trudnosci (ilosc kolorow kulek na mapie) jest wczytywany z pliku tekstowego.
+     */
     Options(){
 
         super("Wybór poziomu trudności");
@@ -23,7 +28,7 @@ public class Options extends JFrame implements ActionListener {
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 dispose();
-                MainMenu okienko = new MainMenu();
+                MainMenu mainMenu = new MainMenu();
             }
         });
         latwy = new JButton("Łatwy");
@@ -40,49 +45,12 @@ public class Options extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    /*public void actionPerformed(ActionEvent e){
-        if(e.getSource()==latwy)
-        {
-
-            dispose();
-            try{
-                PrintWriter save = new PrintWriter("difficulty.txt");
-                save.println("2");
-                save.close();
-            } catch(IOException error)
-            {
-                System.out.println("IOException");
-            }
-            MainMenu mainMenu = new MainMenu();
-
-        }
-        if(e.getSource()==sredni){
-            dispose();
-            try{
-                PrintWriter save = new PrintWriter("difficulty.txt");
-                save.println("3");
-                save.close();
-            } catch(IOException error)
-            {
-                System.out.println("IOException");
-            }
-            MainMenu mainMenu = new MainMenu();
-        }
-        if(e.getSource()==trudny){
-            dispose();
-            try{
-                PrintWriter save = new PrintWriter("difficulty.txt");
-                save.println("4");
-                save.close();
-            } catch(IOException error)
-            {
-                System.out.println("IOException");
-            }
-            MainMenu mainMenu = new MainMenu();
-        }
-
-
-    }*/
+    /**
+     * Wywolywana po wcisnieciu jednego z wyswietlanych przyciskow.
+     * Zmienia ilosc kolorow kulek wyswietlanych na ekranie w zaleznosci od wcisnietego przycisku.
+     * Po wcisnieciu przycisku nastepuje powrot do menu glownego.
+     * @param e
+     */
     public void actionPerformed(ActionEvent e){
         int difficultyCode;
         if (e.getSource() == latwy) {

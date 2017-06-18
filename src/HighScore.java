@@ -8,18 +8,23 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
- * Created by Błażej on 2017-06-16.
+ * Odpowiada za wyswietlenie okna z graczami ktorzy uzyskali najlepszy wynik.
  */
-public class HighScore extends JFrame /*implements ActionListener*/ {
-    private final int SCORES_AMOUNT = 5;
-    private String[] Wyniki = new String[SCORES_AMOUNT];
+class HighScore extends JFrame {
+   // private final int SCORES_AMOUNT = 5;
+   // private String[] Wyniki = new String[SCORES_AMOUNT];
+
+    /**
+     * Konstruktor, tworzy okno, w ktorym wyswietla wyniki graczy z najlepszymi wynikami.
+     * Imiona graczy wraz z najlepszymi wynikami wczytywane sa z pliku tekstowego.
+     * @throws FileNotFoundException Rzuca wyjatek jesli plik highscore.txt nie zostal odnaleziony.
+     */
     HighScore() throws FileNotFoundException{
         super("Najlepsze wyniki");
-      //  setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
                                    public void windowClosing(WindowEvent e) {
                                        dispose();
-                                       MainMenu okienko = new MainMenu();
+                                       MainMenu mainmenu = new MainMenu();
                                    }
                                });
         setSize(350, 500);
