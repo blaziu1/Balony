@@ -8,46 +8,66 @@ import java.util.Vector;
 
 
 class Game {
-    final int NUM_OF_FILES=3;
-    static int map=0;
+    private static int map_num =0;
+    private int NUM_OF_FILES = 3;
 
-
-    void descendBallons(Vector<Balon> Balloons, int descend) {
-        for (Balon b : Balloons) {
-            b.setWsplY(b.getWsplY() + descend);
+    /**
+     * Odpowiada za obnizanie sie balonow na mapie.
+     * @param Balloons Kontener zawierajacy wszystkie wyswietlane ballons.
+     * @param descend Mowi o ile ballons maja sie obnizyc.
+     */
+    void descendBallons(Vector<Balloon> Balloons, int descend) {
+        for (Balloon b : Balloons) {
+            b.setyCoordinate(b.getyCoordinate() + descend);
         }
     }
 
-    Vector<Balon> addBallons(){
-        OdczytPlanszy load=new OdczytPlanszy();
+    /**
+     * Dodaje na plansze ballons wczytywane z pliku.
+     * Wywolywane w trybie arcade po obnizeniu sie balonow.
+     * @return Kontener zawierajacy dodawane ballons
+     */
+    Vector<Balloon> addBallons(){
+        MapLoad load=new MapLoad();
         try{
-            load.Wczytaj(new File("fabularnysredni.txt"));
+            load.loadFile(new File("fabularnysredni.txt"));
         }
         catch(IOException error){
             System.out.println("ERROR: IOException");
         }
-        return load.balony;
+        return load.ballons;
     }
 
-    boolean checkStatus(Vector<Balon> Balloons) {
-        for (Balon b : Balloons) {
-            if (b.getWsplY() == 13) {
+    /**
+     * Sprawdza czy jakis balon znajduje sie na wysokosci pocisku na mapie.
+     * @param Balloons Kontener wszystkich wyswietlanych balonow.
+     * @return true jesli ballons znajduja sie powyzej pocisku, false jesli na tej samej wysokosci.
+     */
+    boolean checkStatus(Vector<Balloon> Balloons) {
+        for (Balloon b : Balloons) {
+            if (b.getyCoordinate() == 13) {
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * Odpowiada za zachowanie gry po uusnieciu z niej wszystkich balonow.
+     * Po usunieciu wszystkich balonow tworzona jest nowa mapa z pliku tekstowego.
+     * Jesli gracz wyczyscil ballons na wszystkich dostepnych mapach, wyswietlany jest komunikat informujacy o zwyciestwie.
+     */
     void nextLevel(){
+
         File[] files = new File[NUM_OF_FILES];
         files[0] = new File("drugipoziom.txt");
         files[1] = new File("trzecipoziom.txt");
         files[2] = new File("czwartypoziom.txt");
         try {
-            Plansza plansza1 = new Plansza(files[map]);
-            map++;
+            Map map = new Map(files[map_num]);
+            map_num++;
             //    EventQueue.invokeLater(() -> plansza.setVisible(true));
-            plansza1.setVisible(true);
+            map.setVisible(true);
         }
         catch (IOException error)
         {
@@ -61,12 +81,18 @@ class Game {
             int selectedOption = JOptionPane.showOptionDialog(null, panel,"Koniec gry", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options , options[0]);
             if(selectedOption == 0){
                 MainMenu menu = new MainMenu();
-                map=0;
+                map_num =0;
             }
 
         }
     }
 
+    /**
+     * Odpowiada za zachowanie gry po porazce.
+     * Wyswietlany jest komunikat informujacy o porazce, w ktorym gracz wpisuje swoje imie.
+     * Jesli imie zostalo wpisane, a wynik gracza jest lepszy od wynikow w pliku highscore.txt to jest on tam wpisywany.
+     * @param score Wynik jaki uzyskal gracz podczas gry.
+     */
     void ending(int score) {
         String[] options = {"OK"};
         JPanel panel = new JPanel();
@@ -98,14 +124,20 @@ class Game {
         }
     }
 
+    /**
+     * Odpowiada za dopisanie imienia gracza wraz z wynikiem do pliku highscore.txt.
+     * @param line Imie gracza.
+     * @param scr Wynik gracza.
+     * @throws FileNotFoundException Wyjatek jesli nie zostal odnaleziony plik highscore.txt.
+     */
     private void updateHighScore(String line, int scr) throws FileNotFoundException {
         int[] scores = new int[5];
         int i=0;
         String[] lines = new String[5];
         String[] names = new String[5];
-        Scanner odczyt = new Scanner(new File("highscore.txt"));
-        while (odczyt.hasNext()) {
-            lines[i]=odczyt.nextLine();
+        Scanner in = new Scanner(new File("highscore.txt"));
+        while (in.hasNext()) {
+            lines[i]=in.nextLine();
             String[] divided = lines[i].split("-");
             String[] divided2 = lines[i].split("\\s+");
             names[i] = divided2[1];
