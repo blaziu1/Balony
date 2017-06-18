@@ -1,19 +1,6 @@
 ﻿#1PLIK TESTOWY
-#2
-#3 tego nie wczytujemy bo to
-#4 komentarze
-WYMIARY 11 15 2
-#5
-#6
-#7
-#8
-#9 tego tez nie
-#10
-#1234123412
-#1234123412
-#1234123412
-#1234123412
-#1234123412
+# WIDTH HEIGHT DESCEND MODE
+properties 11 15 0
 #11 X  Y     Kod Koloru
 0	1	6
 1	1	6

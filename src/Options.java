@@ -52,20 +52,25 @@ public class Options extends JFrame implements ActionListener {
      * @param e
      */
     public void actionPerformed(ActionEvent e){
-        int difficultyCode;
+        int difficultyCode, descendFab, descendArc=1;
         if (e.getSource() == latwy) {
             difficultyCode = 2;
+            descendFab =0;
             }
         else if (e.getSource() == sredni) {
             difficultyCode = 3;
+            descendFab=0;
         } else {
             difficultyCode = 4;
+            descendFab=1;
         }
         dispose();
 
         try {
             PrintWriter save = new PrintWriter("difficulty.txt");
             save.println(difficultyCode);
+            save.println(descendFab);
+            save.println(descendArc);
             save.close();
         } catch (IOException error) {
             System.out.println("IOException");

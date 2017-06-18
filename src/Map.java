@@ -21,15 +21,16 @@ public class Map extends JFrame /*implements ActionListener*/ {
     private double PRZESUNIECIEY;
     private int przesuniecieWPoziomie;
     private int przesuniecieWPionie;
-    private boolean stoper = false;
+    private boolean stop = false;
     private boolean active;
     private Thread th;
     private Timer tm;
     private MapLoad odczyt = new MapLoad();
     private Vector<Balloon> pociski = new Vector<>();
     private Vector<Balloon> displayedBalloons = new Vector<>();
-    private int score = 9;
+    private int score = 0;
     private int counter = 0;
+    private int release = 0;
 
     private Balloon bullet;
     private Balloon secondBullet;
@@ -63,7 +64,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
         class TimeListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!stoper) {
+                if (!stop) {
                     movement();
                     game.checkStatus(displayedBalloons);
                     repaint();
@@ -73,15 +74,19 @@ public class Map extends JFrame /*implements ActionListener*/ {
                     tm.stop();
                     dispose();
                 }
-                if (counter == 3) {
-                    game.descendBallons(displayedBalloons, odczyt.DESCEND);
-                    counter = 0;
-                    if (odczyt.DESCEND != 0) {
+                if (counter == 5) {
+                    if (odczyt.MODE == 0) {
+                        game.descendBallons(displayedBalloons, odczyt.DESCENDARC);
+                        counter = 0;
                         for (int i = 0; i < game.addBallons().size(); i++)
                             displayedBalloons.add(game.addBallons().get(i));
                     }
+                    else{
+                        game.descendBallons(displayedBalloons, odczyt.DESCENDFAB);
+                        counter = 0;
+                    }
                 }
-                if (odczyt.DESCEND == 0 && displayedBalloons.isEmpty()) {
+                if (odczyt.MODE == 1 && displayedBalloons.isEmpty()) {
                     tm.stop();
                     game.nextLevel();
                     dispose();
@@ -136,8 +141,39 @@ public class Map extends JFrame /*implements ActionListener*/ {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                if(release==0){
+                    Location gdzieKliknieto = new Location(e.getX(), e.getY());
+                    double s1 = getWidth(); //pobierana szerokosc
+                    double s2 = (odczyt.WIDTH) * 60; // szerokosc ustalona
+                    double wsps = s1 / s2; //wspolczynnik szerokosci
+                    double s3 = (pociski.lastElement().getxCoordinate()) * wsps; //potrzebna nam zmiana typu double
+                    int su3 = (int) s3; //potrzebna nam zmiana typu int
+                    double s4 = (gdzieKliknieto.getWsplX());
+                    int su4 = (int) s4;
+                    przesuniecieWPoziomie = su4 - su3/*((bullet.getxCoordinate()+30)*(getWidth()/((WIDTH-1)*60)))*/;
+                    double w1 = getHeight(); //pobierana wysokosc
+                    double w2 = (odczyt.HEIGHT * 60); // wysokosc ustalona
+                    double wspw = w1 / w2; //wspolczynnik wysokosci
+                    double w3 = (pociski.lastElement().getyCoordinate()) * wspw; //potrzebna nam zmiana typu double
+                    int wu3 = (int) w3; //potrzebna nam zmiana typu int
+                    double w4 = (gdzieKliknieto.getWsplY());
+                    int wu4 = (int) w4;
+                    przesuniecieWPionie = wu4 - wu3/*(bullet.getyCoordinate()+30)*//*((bullet.getyCoordinate()+30))*//*(getHeight()/(HEIGHT*60)))*/;
+                    droga = Math.sqrt(Math.pow(przesuniecieWPionie, 2) + Math.pow(przesuniecieWPoziomie, 2)); //zmiana
+                    proporcjaX = przesuniecieWPoziomie / droga;
+                    proporcjaY = przesuniecieWPionie / droga;
+                    PRZESUNIECIEX = Math.abs(PRZESUNIECIE * (1 / wsps) * proporcjaX);
+                    PRZESUNIECIEY = Math.abs(PRZESUNIECIE * (1 / wspw) * proporcjaY);
+                    release=1;
+                    active = true;
+                    stop = false;
+                    if (gdzieKliknieto.getWsplY() > pociski.lastElement().getyCoordinate()) {
+                        PRZESUNIECIEX = 0;
+                        PRZESUNIECIEY = 0;
+                    }
+                }
 
-                Location gdzieKliknieto = new Location(e.getX(), e.getY());
+             /*   Location gdzieKliknieto = new Location(e.getX(), e.getY());
                 double s1 = getWidth(); //pobierana szerokosc
                 double s2 = (odczyt.WIDTH) * 60; // szerokosc ustalona
                 double wsps = s1 / s2; //wspolczynnik szerokosci
@@ -145,7 +181,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 int su3 = (int) s3; //potrzebna nam zmiana typu int
                 double s4 = (gdzieKliknieto.getWsplX());
                 int su4 = (int) s4;
-                przesuniecieWPoziomie = su4 - su3/*((bullet.getxCoordinate()+30)*(getWidth()/((WIDTH-1)*60)))*/;
+                przesuniecieWPoziomie = su4 - su3//((bullet.getxCoordinate()+30)*(getWidth()/((WIDTH-1)*60)))
                 double w1 = getHeight(); //pobierana wysokosc
                 double w2 = (odczyt.HEIGHT * 60); // wysokosc ustalona
                 double wspw = w1 / w2; //wspolczynnik wysokosci
@@ -153,18 +189,18 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 int wu3 = (int) w3; //potrzebna nam zmiana typu int
                 double w4 = (gdzieKliknieto.getWsplY());
                 int wu4 = (int) w4;
-                przesuniecieWPionie = wu4 - wu3/*(bullet.getyCoordinate()+30)*//*((bullet.getyCoordinate()+30))*//*(getHeight()/(HEIGHT*60)))*/;
-                droga = Math.sqrt(Math.pow(przesuniecieWPionie, 2) + Math.pow(przesuniecieWPoziomie, 2)); //zmiana
+                przesuniecieWPionie = wu4 - wu3/*(bullet.getyCoordinate()+30)*//*((bullet.getyCoordinate()+30))*//*(getHeight()/(HEIGHT*60)))*/
+              /*  droga = Math.sqrt(Math.pow(przesuniecieWPionie, 2) + Math.pow(przesuniecieWPoziomie, 2)); //zmiana
                 proporcjaX = przesuniecieWPoziomie / droga;
                 proporcjaY = przesuniecieWPionie / droga;
                 PRZESUNIECIEX = Math.abs(PRZESUNIECIE * (1 / wsps) * proporcjaX);
                 PRZESUNIECIEY = Math.abs(PRZESUNIECIE * (1 / wspw) * proporcjaY);
                 active = true;
-                stoper = false;
+                stop = false;
                 if (gdzieKliknieto.getWsplY() > pociski.lastElement().getyCoordinate()) {
                     PRZESUNIECIEX = 0;
                     PRZESUNIECIEY = 0;
-                }
+                }*/
 
             }
 
@@ -230,16 +266,44 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 }
                 int dx = n * 60;
                 pociski.lastElement().setxCoordinate(dx);
-                /*PRZESUNIECIEY = 0;
-                PRZESUNIECIEX = 0;*/
-                stoper = true;
+                stop = true;
                 pociski.lastElement().setxCoordinate((pociski.lastElement().getxCoordinate() / 60));
                 pociski.lastElement().setyCoordinate((pociski.lastElement().getyCoordinate() / 60));
                 displayedBalloons.add(pociski.lastElement());
+                int variableq = 0;
+                int variablez = 0;
+                int variablen = 0;
+                int variablec = 0;
+                int variablezo = 0;
+                for(int k = 0;k<displayedBalloons.size();k++){
+                    if(displayedBalloons.get(k).colour==Colour.ZIELONY){
+                        variablez = 10;
+                    }
+                    if(displayedBalloons.get(k).colour==Colour.CZERWONY){
+
+                        variablen = 100;
+                    }
+                    if(displayedBalloons.get(k).colour==Colour.NIEBIESKI){
+
+                        variablec = 1000;
+                    }
+                    if(displayedBalloons.get(k).colour==Colour.ZOLTY){
+
+                        variablezo = 10000;
+                    }
+
+                }
+                variableq = variablez +variablen +variablec + variablezo;
+                bullet = new Balloon(odczyt.getColour(variableq), (odczyt.WIDTH) * 60 - 60, (odczyt.HEIGHT - 1) * 60);                secondBullet = pociski.firstElement();
+                secondBullet.setxCoordinate((odczyt.WIDTH) * 30 - 30);
+                secondBullet.setyCoordinate((odczyt.HEIGHT - 2) * 60);
                 pociski.clear();
-                bullet = new Balloon(odczyt.getColour(6), (odczyt.WIDTH) * 30 - 30, (odczyt.HEIGHT - 2) * 60);
                 pociski.add(bullet);
+                pociski.add(secondBullet);
+                counter++;
                 disappearing();
+                release=0;
+                System.out.println(score);
             }
 
 
@@ -264,12 +328,35 @@ public class Map extends JFrame /*implements ActionListener*/ {
             int dy = m * 60;
             pociski.lastElement().setyCoordinate(dy);
 
-            stoper = true;
+            stop = true;
             pociski.lastElement().setxCoordinate((pociski.lastElement().getxCoordinate() / 60));
             pociski.lastElement().setyCoordinate((pociski.lastElement().getyCoordinate() / 60));
             displayedBalloons.add(pociski.lastElement());
-            bullet = new Balloon(odczyt.getColour(6), (odczyt.WIDTH) * 60 - 60, (odczyt.HEIGHT - 1) * 60);
-            secondBullet = pociski.firstElement();
+            int variableq = 0;
+            int variablez = 0;
+            int variablen = 0;
+            int variablec = 0;
+            int variablezo = 0;
+            for(int k = 0;k<displayedBalloons.size();k++){
+                if(displayedBalloons.get(k).colour==Colour.ZIELONY){
+                    variablez = 10;
+                }
+                if(displayedBalloons.get(k).colour==Colour.CZERWONY){
+
+                    variablen = 100;
+                }
+                if(displayedBalloons.get(k).colour==Colour.NIEBIESKI){
+
+                    variablec = 1000;
+                }
+                if(displayedBalloons.get(k).colour==Colour.ZOLTY){
+
+                    variablezo = 10000;
+                }
+
+            }
+            variableq = variablez +variablen +variablec + variablezo;
+            bullet = new Balloon(odczyt.getColour(variableq), (odczyt.WIDTH) * 60 - 60, (odczyt.HEIGHT - 1) * 60);            secondBullet = pociski.firstElement();
             secondBullet.setxCoordinate((odczyt.WIDTH) * 30 - 30);
             secondBullet.setyCoordinate((odczyt.HEIGHT - 2) * 60);
             pociski.clear();
@@ -277,6 +364,8 @@ public class Map extends JFrame /*implements ActionListener*/ {
             pociski.add(secondBullet);
             counter++;
             disappearing();
+            release=0;
+            System.out.println(score);
         }
 
 
@@ -381,6 +470,15 @@ public class Map extends JFrame /*implements ActionListener*/ {
                 licznik++;
             }
         }
+        int licznikpktow = 0;
+        if(licznik>2){
+            for(int h =displayedBalloons.size()-1;h>=0;h--){
+                if(indextable[h]!=-1){
+                    licznikpktow++;
+                }
+            }
+
+        }
         if(licznik>2){
             for(int h =displayedBalloons.size()-1;h>=0;h--){
                 if(indextable[h]!=-1){
@@ -389,6 +487,7 @@ public class Map extends JFrame /*implements ActionListener*/ {
             }
 
         }
+        score+=licznikpktow;
     }
 
 

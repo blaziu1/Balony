@@ -9,7 +9,7 @@ import java.util.Vector;
 
 class Game {
     private static int map_num =0;
-    private int NUM_OF_FILES = 3;
+    private int NUM_OF_FILES = 2;
 
     /**
      * Odpowiada za obnizanie sie balonow na mapie.
@@ -45,7 +45,7 @@ class Game {
      */
     boolean checkStatus(Vector<Balloon> Balloons) {
         for (Balloon b : Balloons) {
-            if (b.getyCoordinate() == 13) {
+            if (b.getyCoordinate() >= 13) {
                 return false;
             }
         }
@@ -62,7 +62,6 @@ class Game {
         File[] files = new File[NUM_OF_FILES];
         files[0] = new File("drugipoziom.txt");
         files[1] = new File("trzecipoziom.txt");
-        files[2] = new File("czwartypoziom.txt");
         try {
             Map map = new Map(files[map_num]);
             map_num++;

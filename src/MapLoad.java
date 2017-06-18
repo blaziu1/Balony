@@ -8,7 +8,7 @@ import java.util.Vector;
  * Opowiedzialna za wczytanie wygladu planszy z pliku tekstowego oraz za wczytanie poziomu trudnosci.
  */
 class MapLoad {
-    int HEIGHT, WIDTH, DESCEND, NUM_OF_COLOURS;
+    int HEIGHT, WIDTH, MODE, NUM_OF_COLOURS, DESCENDFAB, DESCENDARC;
     private Vector<Location> coordinates = new Vector<>();
     Vector<Balloon> ballons = new Vector<>();
     Properties pola = new Properties();
@@ -59,11 +59,11 @@ class MapLoad {
         try (BufferedReader br = new BufferedReader(new FileReader(plikStartowy))) {
             String line = br.readLine();
             while (line != null) {
-                if (line.contains("WYMIARY")) {
+                if (line.contains("properties")) {
                     String[] parameters = line.split("\\s+");
                     WIDTH = Integer.parseInt(parameters[1]);
                     HEIGHT = Integer.parseInt(parameters[2]);
-                    DESCEND = Integer.parseInt(parameters[3]);
+                    MODE = Integer.parseInt(parameters[3]);
 
                     line = br.readLine();
                 } else {
@@ -107,8 +107,12 @@ class MapLoad {
      */
     private void readDifficulty() throws FileNotFoundException{
         Scanner in = new Scanner(new File("difficulty.txt"));
-        String zdanie = in.nextLine();
-        NUM_OF_COLOURS =Integer.parseInt(zdanie);
+        String numOfColours = in.nextLine();
+        NUM_OF_COLOURS =Integer.parseInt(numOfColours);
+        String descendFab = in.nextLine();
+        DESCENDFAB = Integer.parseInt(descendFab);
+        String descendArc = in.nextLine();
+        DESCENDARC = Integer.parseInt(descendArc);
     }
 
     /**
@@ -141,6 +145,146 @@ class MapLoad {
             default:
                 colour = Colour.brak;
 
+        }
+        if (ColourCode == 10) {
+            colour = Colour.ZIELONY;
+        }
+        if (ColourCode == 100) {
+            colour = Colour.CZERWONY;
+        }
+        if (ColourCode == 1000) {
+            colour = Colour.NIEBIESKI;
+        }
+        if (ColourCode == 10000) {
+            colour = Colour.ZOLTY;
+        }
+        if (ColourCode == 110) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.CZERWONY;
+            }
+        }
+        if (ColourCode == 1010) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.NIEBIESKI;
+            }
+        }
+        if (ColourCode == 10010) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.ZOLTY;
+            }
+        }
+        if (ColourCode == 1100) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.CZERWONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.NIEBIESKI;
+            }
+        }
+        if (ColourCode == 10100) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.CZERWONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.ZOLTY;
+            }
+        }
+        if (ColourCode == 11000) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(2);
+            if(ColourCode==0){
+                colour = Colour.NIEBIESKI;
+            }
+            if(ColourCode==1){
+                colour = Colour.ZOLTY;
+            }
+        }
+        if (ColourCode == 1110) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(3);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.CZERWONY;
+            }
+            if(ColourCode==2){
+                colour = Colour.NIEBIESKI;
+            }
+        }
+        if (ColourCode == 10110) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(3);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.CZERWONY;
+            }
+            if(ColourCode==2){
+                colour = Colour.ZOLTY;
+            }
+        }
+        if (ColourCode == 11100) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(3);
+            if(ColourCode==0){
+                colour = Colour.ZOLTY;
+            }
+            if(ColourCode==1){
+                colour = Colour.CZERWONY;
+            }
+            if(ColourCode==2){
+                colour = Colour.NIEBIESKI;
+            }
+        }
+        if (ColourCode == 11010) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(3);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.ZOLTY;
+            }
+            if(ColourCode==2){
+                colour = Colour.NIEBIESKI;
+            }
+        }
+        if (ColourCode == 11110) {
+            Random rand = new Random();
+            ColourCode = rand.nextInt(4);
+            if(ColourCode==0){
+                colour = Colour.ZIELONY;
+            }
+            if(ColourCode==1){
+                colour = Colour.ZOLTY;
+            }
+            if(ColourCode==2){
+                colour = Colour.NIEBIESKI;
+            }
+            if(ColourCode==3){
+                colour = Colour.CZERWONY;
+            }
         }
         return colour;
     }

@@ -1,7 +1,7 @@
 #1PLIK TESTOWY
 #2 poziom trudności : sredni
 #3 plansza 1
-WYMIARY 11 15 0
+properties 11 15 1
 #X  Y     Kod Koloru
 0	1	6
 1	1	6
@@ -14,15 +14,4 @@ WYMIARY 11 15 0
 8	1	6
 9	1	6
 10	1	6
-0   2   6
-1	2	6
-2	2   6
-3	2	6
-4	2	6
-5	2	6
-6	2	6
-7	2	6
-8	2	6
-9	2	6
-10  2   6
 # nalezy pamietać zeby nie zostawic na dole pustych linijek
