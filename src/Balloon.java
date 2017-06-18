@@ -12,7 +12,7 @@ public class Balloon {
 
     /**
      * Konstruktor klasy Balloon.
-     * Tworzy balon nadajac mu colour i wspolrzedne na mapie
+     * Tworzy balon nadajac mu kolor i wspolrzedne na mapie
      * @param colour kolor balonu.
      * @param x Wspolrzedna x balonu.
      * @param y Wspolrzedna y balonu.
